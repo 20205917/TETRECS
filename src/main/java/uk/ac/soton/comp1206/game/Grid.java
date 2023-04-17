@@ -122,9 +122,44 @@ public class Grid {
      * @return whether the piece can be played
      */
     public boolean canPlayPiece(GamePiece piece, int x, int y) {
-
-
-        return false;
+        //Our x y ranges from 0,0 to 4,4, and we need to make sure that our piece doesn't exist in those places
+        var blocks = piece.getBlocks();
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (blocks[i][j] == 1) {
+                    //get the value of the grid at the given x and y
+                    var gridValue = get(x + i - 1, y + j - 1);
+                    //if the grid value is not 0, it means that outbounds or there is a piece
+                    if (gridValue != 0) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
+
+    /**
+     * playPiece method
+     * Which takes a GamePiece with a given x and y of the grid will place the piece on the grid
+     * Tip: iterate through the piece blocks, if the piece has a block at a given x and y (a value of 1),
+     * set the corresponding x and y on the grid to the piece number
+     *
+     * @param piece GamePiece
+     * @param x     column
+     * @param y     row
+     */
+    public void playPiece(GamePiece piece, int x, int y) {
+        var blocks = piece.getBlocks();
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (blocks[i][j] == 1) {
+                    //set the value of the grid at the given x and y to the piece number
+                    set(x + i - 1, y + j - 1, piece.getValue());
+                }
+            }
+        }
+    }
+
 
 }
