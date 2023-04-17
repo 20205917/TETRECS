@@ -4,6 +4,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
 
+import java.util.Random;
+
 /**
  * The Game class handles the main logic, state and properties of the TetrECS game. Methods to manipulate the game state
  * and to handle actions made by the player should take place inside this class.
@@ -29,6 +31,7 @@ public class Game {
 
     /**
      * Create a new game with the specified rows and columns. Creates a corresponding grid model.
+     *
      * @param cols number of columns
      * @param rows number of rows
      */
@@ -37,7 +40,7 @@ public class Game {
         this.rows = rows;
 
         //Create a new grid model to represent the game state
-        this.grid = new Grid(cols,rows);
+        this.grid = new Grid(cols, rows);
     }
 
     /**
@@ -57,6 +60,7 @@ public class Game {
 
     /**
      * Handle what should happen when a particular block is clicked
+     *
      * @param gameBlock the block that was clicked
      */
     public void blockClicked(GameBlock gameBlock) {
@@ -65,18 +69,19 @@ public class Game {
         int y = gameBlock.getY();
 
         //Get the new value for this block
-        int previousValue = grid.get(x,y);
+        int previousValue = grid.get(x, y);
         int newValue = previousValue + 1;
-        if (newValue  > GamePiece.PIECES) {
+        if (newValue > GamePiece.PIECES) {
             newValue = 0;
         }
 
         //Update the grid with the new value
-        grid.set(x,y,newValue);
+        grid.set(x, y, newValue);
     }
 
     /**
      * Get the grid model inside this game representing the game state of the board
+     *
      * @return game grid model
      */
     public Grid getGrid() {
@@ -85,6 +90,7 @@ public class Game {
 
     /**
      * Get the number of columns in this game
+     *
      * @return number of columns
      */
     public int getCols() {
@@ -93,11 +99,31 @@ public class Game {
 
     /**
      * Get the number of rows in this game
+     *
      * @return number of rows
      */
     public int getRows() {
         return rows;
     }
+
+    /**
+     * spawnPiece
+     * Create a new random GamePiece by calling GamePiece.createPiece with a
+     * random number between 0 and the number of pieces
+     * Tip: Create a Random object, and call nextInt to generate a random numberbetween 0 and a given number
+     *
+     * @return a new GamePiece
+     */
+    public GamePiece spawnPiece() {
+        var random = new Random();
+        var randomPiece = random.nextInt(GamePiece.PIECES);
+
+        logger.info("Spawning piece: " + randomPiece);
+
+        return GamePiece.createPiece(randomPiece);
+    }
+
+
 
 
 }
