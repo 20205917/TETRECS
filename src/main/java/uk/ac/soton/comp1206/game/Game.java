@@ -39,6 +39,10 @@ public class Game {
      */
     protected GamePiece currentPiece;
 
+    //Add a followingPiece to Game. Initialise it at the start of the game.
+    protected GamePiece followingPiece;
+
+
     private NextPieceListener nextPieceListener;
 
     /**
@@ -73,6 +77,7 @@ public class Game {
         this.level = new SimpleIntegerProperty(0);
         this.lives = new SimpleIntegerProperty(3);
         this.multiplier = new SimpleIntegerProperty(1);
+        this.followingPiece= spawnPiece();
     }
 
     public void setNextPieceListener(NextPieceListener nextPieceListener) {
@@ -159,7 +164,7 @@ public class Game {
         logger.info("Spawning piece: " + randomPiece);
 
 
-        var piece=GamePiece.createPiece(randomPiece);
+        var piece = GamePiece.createPiece(randomPiece);
         if (nextPieceListener != null) {
             nextPieceListener.nextPiece(piece);
         }
@@ -170,7 +175,8 @@ public class Game {
      * Replace the current piece with a new piece
      */
     public void nextPiece() {
-        currentPiece = spawnPiece();
+        currentPiece = followingPiece;
+        followingPiece = spawnPiece();
     }
 
     /**
@@ -241,7 +247,6 @@ public class Game {
         //1000 points, you reach level 1.At 3000 points you would be level 3)
         level.set(score.get() / 1000);
 
-
     }
 
     /**
@@ -263,6 +268,14 @@ public class Game {
         }
         var score = lines * blocks * 10 * multiplier.get();
         this.score.set(this.score.get() + score);
+    }
+
+    /**
+     * rotateCurrentPiece method rotate the next piece,
+     * using GamePiece's provided rotate method
+     */
+    public void rotateCurrentPiece() {
+        currentPiece.rotate();
     }
 
 

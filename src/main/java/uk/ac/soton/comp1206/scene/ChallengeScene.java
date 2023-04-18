@@ -62,13 +62,18 @@ public class ChallengeScene extends BaseScene {
         statePanel.setPadding(new Insets(10, 10, 10, 10));
         mainPane.setLeft(statePanel);
 
+        var vBox = new VBox();
+        vBox.setSpacing(50);
         //Add the piece board to the right of the screen
         var pieceBoard = getPieceBoard();
 
         //In this method, pass the new piece to the PieceBoard so it displays.
         game.setNextPieceListener(pieceBoard::setPiece);
 
-        mainPane.setRight(pieceBoard);
+        vBox.getChildren().add(pieceBoard);
+
+
+        mainPane.setRight(vBox);
 
         var board = new GameBoard(game.getGrid(), gameWindow.getWidth() / 2.0, gameWindow.getWidth() / 2.0);
         mainPane.setCenter(board);
