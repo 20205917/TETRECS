@@ -5,6 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
 import uk.ac.soton.comp1206.component.GameBlockCoordinate;
+import uk.ac.soton.comp1206.component.Multimedia;
 
 import java.util.HashSet;
 import java.util.Random;
@@ -69,7 +70,6 @@ public class Game {
         this.level = new SimpleIntegerProperty(0);
         this.lives = new SimpleIntegerProperty(3);
         this.multiplier = new SimpleIntegerProperty(1);
-
     }
 
     /**
@@ -86,6 +86,7 @@ public class Game {
     public void initialiseGame() {
         logger.info("Initialising game");
         //When the game is initialised, spawn a new GamePiece and set it as the currentPiece
+        Multimedia.playMusic("game.wav");
         currentPiece = spawnPiece();
     }
 
@@ -226,6 +227,7 @@ public class Game {
         //The level should increase per 1000 points (at the start, you begin at level 0.After
         //1000 points, you reach level 1.At 3000 points you would be level 3)
         level.set(score.get() / 1000);
+
 
     }
 
