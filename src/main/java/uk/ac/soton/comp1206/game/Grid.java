@@ -150,16 +150,24 @@ public class Grid {
      * @param y     row
      */
     public void playPiece(GamePiece piece, int x, int y) {
-        var blocks = piece.getBlocks();
+        int[][] blocks = piece.getBlocks();
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                if (blocks[i][j] == 1) {
+                if (blocks[i][j] != 0) {
                     //set the value of the grid at the given x and y to the piece number
                     set(x + i - 1, y + j - 1, piece.getValue());
                 }
             }
         }
     }
-
+    /**
+     * Set Grid to empty
+     */
+    public void clearGrid() {
+        for (int y = 0; y < this.rows; y++) {
+            for (int x = 0; x < this.cols; x++)
+                this.grid[x][y].set(0);
+        }
+    }
 
 }

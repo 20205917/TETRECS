@@ -90,7 +90,12 @@ public class GameWindow {
     }
 
     /**
-     * Setup the default settings for the stage itself (the window), such as the title and minimum width and height.
+     * Display Instructions
+     */
+    public void startInstructions() { loadScene(new InstructionsScene(this)); }
+
+    /**
+     * Set up the default settings for the stage itself (the window), such as the title and minimum width and height.
      */
     public void setupStage() {
         stage.setTitle("TetrECS");
@@ -105,7 +110,7 @@ public class GameWindow {
      * @param newScene new scene to load
      */
     public void loadScene(BaseScene newScene) {
-        //Cleanup remains of the previous scene
+        //Clean up remains of the previous scene
         cleanup();
 
         //Create the new scene and set it up
@@ -119,7 +124,7 @@ public class GameWindow {
     }
 
     /**
-     * Setup the default scene (an empty black scene) when no scene is loaded
+     * Set up the default scene (an empty black scene) when no scene is loaded
      */
     public void setupDefaultScene() {
         this.scene = new Scene(new Pane(), width, height, Color.BLACK);

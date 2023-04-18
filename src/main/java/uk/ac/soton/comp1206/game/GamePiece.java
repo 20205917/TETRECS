@@ -154,7 +154,6 @@ public class GamePiece {
         this.name = name;
         this.blocks = blocks;
         this.value = value;
-
         //Use the shape of the block to create a grid with either 0 (empty) or the value of this shape for each block.
         for(int x = 0; x < blocks.length; x++) {
             for (int y = 0; y < blocks[x].length; y++) {

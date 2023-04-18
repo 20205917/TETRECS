@@ -147,8 +147,7 @@ public class MenuScene extends BaseScene {
     }
 
     public void startIntro() {
-        //TODO: Implement this method
-
+        gameWindow.startInstructions();
     }
 
     public void close() {

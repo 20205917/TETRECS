@@ -30,5 +30,14 @@ public class PieceBoard extends GameBoard {
         }
     }
 
+    /**
+     * display a piece on the piece board
+     *
+     * @param gamePiece is the piece to be displayed
+     */
+    public void displayPiece(GamePiece gamePiece) {
+        this.grid.clearGrid();
+        grid.playPiece(gamePiece, 1, 1);
+    }
 
 }
