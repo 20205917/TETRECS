@@ -100,7 +100,9 @@ public class Game {
         //When the game is initialised, spawn a new GamePiece and set it as the currentPiece
         Multimedia.stopMusic();
         Multimedia.playMusic("game.wav");
-        currentPiece = spawnPiece();
+
+        followingPiece = spawnPiece();
+        nextPiece();
     }
 
     /**
@@ -163,12 +165,7 @@ public class Game {
 
         logger.info("Spawning piece: " + randomPiece);
 
-
-        var piece = GamePiece.createPiece(randomPiece);
-        if (nextPieceListener != null) {
-            nextPieceListener.nextPiece(piece);
-        }
-        return piece;
+        return GamePiece.createPiece(randomPiece);
     }
 
     /**
@@ -177,6 +174,10 @@ public class Game {
     public void nextPiece() {
         currentPiece = followingPiece;
         followingPiece = spawnPiece();
+        if (nextPieceListener != null) {
+            nextPieceListener.nextPiece(currentPiece);}
+
+        logger.info("The next piece is: {}", followingPiece);
     }
 
     /**

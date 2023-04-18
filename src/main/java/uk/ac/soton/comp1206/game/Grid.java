@@ -126,11 +126,16 @@ public class Grid {
         var blocks = piece.getBlocks();
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                if (blocks[i][j] == 1) {
-                    //get the value of the grid at the given x and y
-                    var gridValue = get(x + i - 1, y + j - 1);
+                if (blocks[i][j] != 0) {
+                    //
+                    int n = x + i - 1;
+                    int m = y + j - 1;
+                    //Determine whether the boundary is exceeded
+                    if (n < 0 || n > cols || m < 0 || m > rows) {
+                        return false;
+                    }
                     //if the grid value is not 0, it means that outbounds or there is a piece
-                    if (gridValue != 0) {
+                    if (get(x + i - 1, y + j - 1) != 0) {
                         return false;
                     }
                 }

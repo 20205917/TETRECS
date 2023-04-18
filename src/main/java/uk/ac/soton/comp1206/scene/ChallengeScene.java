@@ -1,10 +1,9 @@
 package uk.ac.soton.comp1206.scene;
 
-import javafx.beans.property.Property;
 import javafx.geometry.Insets;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.StringConverter;
 import org.apache.logging.log4j.LogManager;
@@ -12,9 +11,7 @@ import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
 import uk.ac.soton.comp1206.component.GameBoard;
 import uk.ac.soton.comp1206.component.PieceBoard;
-import uk.ac.soton.comp1206.event.NextPieceListener;
 import uk.ac.soton.comp1206.game.Game;
-import uk.ac.soton.comp1206.game.GamePiece;
 import uk.ac.soton.comp1206.ui.GamePane;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
@@ -25,7 +22,10 @@ public class ChallengeScene extends BaseScene {
 
     private static final Logger logger = LogManager.getLogger(MenuScene.class);
     protected Game game;
-
+    //holds the current piece
+    protected PieceBoard currentPiece;
+    //holds the next piece
+    protected PieceBoard followingPiece;
     /**
      * Create a new Single Player challenge scene
      *
@@ -64,13 +64,19 @@ public class ChallengeScene extends BaseScene {
 
         var vBox = new VBox();
         vBox.setSpacing(50);
-        //Add the piece board to the right of the screen
-        var pieceBoard = getPieceBoard();
+
+        //displays the current piece in a pieceBoard object
+        currentPiece = new PieceBoard(gameWindow.getWidth()/6.0,gameWindow.getHeight()/6.0);
+        currentPiece.getStyleClass().add("gameBox");
+        vBox.getChildren().add(currentPiece);
+
+        //displays the next piece in a pieceBoard object
+        followingPiece = new PieceBoard(gameWindow.getWidth()/11.0,gameWindow.getHeight()/11.0);
+        followingPiece.getStyleClass().add("gameBox");
+        vBox.getChildren().add(followingPiece);
 
         //In this method, pass the new piece to the PieceBoard so it displays.
-        game.setNextPieceListener(pieceBoard::setPiece);
-
-        vBox.getChildren().add(pieceBoard);
+        game.setNextPieceListener(currentPiece::setPiece);
 
 
         mainPane.setRight(vBox);
@@ -92,7 +98,7 @@ public class ChallengeScene extends BaseScene {
     }
 
     /**
-     * Setup the game object and model
+     * Set up the game object and model
      */
     public void setupGame() {
         logger.info("Starting a new challenge");
@@ -202,10 +208,6 @@ public class ChallengeScene extends BaseScene {
         vbox.getChildren().add(multiplierText);
 
         return vbox;
-    }
-
-    public PieceBoard getPieceBoard() {
-        return new PieceBoard(gameWindow.getWidth() / 4.0, gameWindow.getWidth() / 4.0);
     }
 
 }
