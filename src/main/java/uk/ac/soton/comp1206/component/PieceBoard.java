@@ -17,27 +17,14 @@ public class PieceBoard extends GameBoard {
         super(N, N, width, height);
     }
 
-    public void setPiece(GamePiece piece) {
-        //clear the grid
-        var block = piece.getBlocks();
-        for (int x = 0; x < N; x++) {
-            for (int y = 0; y < N; y++) {
-                grid.set(x, y, 0);
-                if (block[x][y] != 0) {
-                    grid.set(x, y, block[x][y]);
-                }
-            }
-        }
-    }
-
     /**
      * display a piece on the piece board
      *
-     * @param gamePiece is the piece to be displayed
+     * @param piece is the piece to be displayed
      */
-    public void displayPiece(GamePiece gamePiece) {
+    public void setPiece(GamePiece piece) {
         this.grid.clearGrid();
-        grid.playPiece(gamePiece, 1, 1);
+        grid.playPiece(piece, 1, 1);
     }
 
 }

@@ -117,7 +117,7 @@ public class InstructionsScene extends BaseScene{
 
             PieceBoard pieceBoard = new PieceBoard(this.gameWindow.getWidth() /14,this.gameWindow.getHeight()/14);
 
-            pieceBoard.displayPiece(gamePiece);
+            pieceBoard.setPiece(gamePiece);
 
             piecesPane.add(pieceBoard, i % 5, i / 5);
 
