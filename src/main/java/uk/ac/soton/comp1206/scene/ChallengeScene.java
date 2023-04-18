@@ -12,8 +12,10 @@ import uk.ac.soton.comp1206.component.GameBlock;
 import uk.ac.soton.comp1206.component.GameBoard;
 import uk.ac.soton.comp1206.component.PieceBoard;
 import uk.ac.soton.comp1206.game.Game;
+import uk.ac.soton.comp1206.game.GamePiece;
 import uk.ac.soton.comp1206.ui.GamePane;
 import uk.ac.soton.comp1206.ui.GameWindow;
+import uk.ac.soton.comp1206.utils.Multimedia;
 
 /**
  * The Single Player challenge scene. Holds the UI for the single player challenge mode in the game.
@@ -57,13 +59,15 @@ public class ChallengeScene extends BaseScene {
         var mainPane = new BorderPane();
         challengePane.getChildren().add(mainPane);
 
+
         //Add the state panel to the left of the screen
         var statePanel = addStatePanel();
         statePanel.setPadding(new Insets(10, 10, 10, 10));
         mainPane.setLeft(statePanel);
 
+
         var vBox = new VBox();
-        vBox.setSpacing(50);
+        vBox.setSpacing(30);
 
         //displays the current piece in a pieceBoard object
         currentPiece = new PieceBoard(gameWindow.getWidth()/6.0,gameWindow.getHeight()/6.0);
@@ -75,17 +79,20 @@ public class ChallengeScene extends BaseScene {
         followingPiece.getStyleClass().add("gameBox");
         vBox.getChildren().add(followingPiece);
 
-        //In this method, pass the new piece to the PieceBoard so it displays.
-        game.setNextPieceListener(currentPiece::setPiece);
-
-
         mainPane.setRight(vBox);
+
 
         var board = new GameBoard(game.getGrid(), gameWindow.getWidth() / 2.0, gameWindow.getWidth() / 2.0);
         mainPane.setCenter(board);
+        board.getStyleClass().add("gameBox1");
+
+
 
         //Handle block on gameboard grid being clicked
         board.setOnBlockClick(this::blockClicked);
+
+        //Handle rotation on block when pieceBoard grid is clicked
+        currentPiece.setOnBlockClick(this::rotateCurrentPiece);
     }
 
     /**
@@ -115,6 +122,10 @@ public class ChallengeScene extends BaseScene {
     @Override
     public void initialise() {
         logger.info("Initialising Challenge");
+
+        //listens to when the next piece is fetched and calls the respective in class method
+        this.game.setNextPieceListener(this::nextPiece);
+
         //add keyboard listener
         //esc to go back to menu
         scene.setOnKeyPressed(event -> {
@@ -129,6 +140,20 @@ public class ChallengeScene extends BaseScene {
         });
 
         game.start();
+    }
+
+    /**
+     * reset the next currentPiece and next followingPiece on the pieceBoard
+     */
+    protected void nextPiece(GamePiece nextCurrentPiece,GamePiece nextFollowingPiece) {
+        this.currentPiece.setPiece(nextCurrentPiece);
+        this.followingPiece.setPiece(nextFollowingPiece);
+    }
+
+    public void rotateCurrentPiece(GameBlock block) {
+        game.rotateCurrentPiece();
+        currentPiece.setPiece(game.getCurrentPiece());
+        Multimedia.playAudio("rotate.wav");
     }
 
     private void quit() {

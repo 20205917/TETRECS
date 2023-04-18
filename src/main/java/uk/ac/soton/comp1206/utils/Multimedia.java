@@ -7,6 +7,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.game.Game;
 
+import java.util.Objects;
+
 /**
  * Multimedia
  * Add two MediaPlayer fields to handle an audio player and music player
@@ -33,7 +35,7 @@ public class Multimedia {
 
     public static void playAudio(String filePath) {
         try {
-            String musicFilePath = Multimedia.class.getResource("/audio/" + filePath).toExternalForm();
+            String musicFilePath = Objects.requireNonNull(Multimedia.class.getResource("/sounds/" + filePath)).toExternalForm();
             logger.info("Playing audio file: " + musicFilePath);
             Media audio = new Media(musicFilePath);
             audioPlayer = new MediaPlayer(audio);
@@ -47,7 +49,7 @@ public class Multimedia {
 
     public static void playMusic(String fileName) {
         try {
-            String musicFilePath = Multimedia.class.getResource("/music/" + fileName).toExternalForm();
+            String musicFilePath = Objects.requireNonNull(Multimedia.class.getResource("/music/" + fileName)).toExternalForm();
             logger.info("Playing music file: " + musicFilePath);
             Media music = new Media(musicFilePath);
             musicPlayer = new MediaPlayer(music);
@@ -71,7 +73,7 @@ public class Multimedia {
     }
 
     public static ImageView getImageView(String fileName) {
-        String imageFilePath = Multimedia.class.getResource("/images/" + fileName).toExternalForm();
+        String imageFilePath = Objects.requireNonNull(Multimedia.class.getResource("/images/" + fileName)).toExternalForm();
         logger.info("Loading image file: " + imageFilePath);
         return new ImageView(imageFilePath);
     }

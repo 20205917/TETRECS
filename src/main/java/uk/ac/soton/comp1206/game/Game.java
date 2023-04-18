@@ -101,7 +101,7 @@ public class Game {
         Multimedia.stopMusic();
         Multimedia.playMusic("game.wav");
 
-        followingPiece = spawnPiece();
+        //Initializes two Piece
         nextPiece();
     }
 
@@ -119,9 +119,16 @@ public class Game {
         if (grid.canPlayPiece(currentPiece, x, y)) {
             //If the grid can play the piece, place it
             grid.playPiece(currentPiece, x, y);
+            //Generate the next
             nextPiece();
+            //clear the row and reset the blocks that are full
+            afterPiece();
+            Multimedia.playAudio("place.wav");
         }
-
+        else {// placement of the piece failed
+            logger.info("Cannot place piece!");
+            Multimedia.playAudio("fail.wav");
+        }
     }
 
     /**
@@ -169,14 +176,18 @@ public class Game {
     }
 
     /**
-     * Replace the current piece with a new piece
+     * Replace the current piece with a following Piece
+     * Replace the following Piece with a new piece
+     * reset
      */
     public void nextPiece() {
         currentPiece = followingPiece;
+        //creat a next piece
         followingPiece = spawnPiece();
-        if (nextPieceListener != null) {
-            nextPieceListener.nextPiece(currentPiece);}
 
+        //reset two Pieces
+        if (nextPieceListener != null) {
+            nextPieceListener.nextPiece(currentPiece,followingPiece);}
         logger.info("The next piece is: {}", followingPiece);
     }
 
@@ -278,6 +289,7 @@ public class Game {
     public void rotateCurrentPiece() {
         currentPiece.rotate();
     }
-
-
+    public GamePiece getCurrentPiece() {
+        return currentPiece;
+    }
 }
