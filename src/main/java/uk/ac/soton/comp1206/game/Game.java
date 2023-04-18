@@ -5,6 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
 import uk.ac.soton.comp1206.component.GameBlockCoordinate;
+import uk.ac.soton.comp1206.event.NextPieceListener;
 import uk.ac.soton.comp1206.utils.Multimedia;
 
 import java.util.HashSet;
@@ -38,6 +39,8 @@ public class Game {
      */
     protected GamePiece currentPiece;
 
+    private NextPieceListener nextPieceListener;
+
     /**
      * Add bindable properties for the score, level,
      * lives and multiplier to the Game class,with appropriate accessor methods.
@@ -70,6 +73,10 @@ public class Game {
         this.level = new SimpleIntegerProperty(0);
         this.lives = new SimpleIntegerProperty(3);
         this.multiplier = new SimpleIntegerProperty(1);
+    }
+
+    public void setNextPieceListener(NextPieceListener nextPieceListener) {
+        this.nextPieceListener = nextPieceListener;
     }
 
     /**
@@ -151,7 +158,12 @@ public class Game {
 
         logger.info("Spawning piece: " + randomPiece);
 
-        return GamePiece.createPiece(randomPiece);
+
+        var piece=GamePiece.createPiece(randomPiece);
+        if (nextPieceListener != null) {
+            nextPieceListener.nextPiece(piece);
+        }
+        return piece;
     }
 
     /**

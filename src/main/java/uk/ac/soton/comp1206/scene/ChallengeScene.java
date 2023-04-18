@@ -12,7 +12,9 @@ import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
 import uk.ac.soton.comp1206.component.GameBoard;
 import uk.ac.soton.comp1206.component.PieceBoard;
+import uk.ac.soton.comp1206.event.NextPieceListener;
 import uk.ac.soton.comp1206.game.Game;
+import uk.ac.soton.comp1206.game.GamePiece;
 import uk.ac.soton.comp1206.ui.GamePane;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
@@ -62,6 +64,10 @@ public class ChallengeScene extends BaseScene {
 
         //Add the piece board to the right of the screen
         var pieceBoard = getPieceBoard();
+
+        //In this method, pass the new piece to the PieceBoard so it displays.
+        game.setNextPieceListener(pieceBoard::setPiece);
+
         mainPane.setRight(pieceBoard);
 
         var board = new GameBoard(game.getGrid(), gameWindow.getWidth() / 2.0, gameWindow.getWidth() / 2.0);
@@ -88,7 +94,9 @@ public class ChallengeScene extends BaseScene {
 
         //Start new game
         game = new Game(5, 5);
+
     }
+
 
     /**
      * Initialise the scene and start the game
