@@ -54,8 +54,6 @@ public class ChallengeScene extends BaseScene {
         vbox.setPadding(new Insets(10, 10, 10, 10));
 
 
-
-
         var mainPane = new BorderPane();
         challengePane.getChildren().add(mainPane);
 
@@ -96,10 +94,13 @@ public class ChallengeScene extends BaseScene {
         game.start();
     }
 
+    /**
+     * Add a state panel to the scene
+     * Add Ul elements to show the score, level, multiplier and lives in the ChallengeScene bybinding to the game properties.
+     * Tip: Use the .asString method on an Integer Property to get it as a bindable string!
+     */
+    public VBox addStatePanel() {
 
-    public VBox addStatePanel(){
-        //Add Ul elements to show the score, level, multiplier and lives in the ChallengeScene bybinding to the game properties.
-        //Tip: Use the .asString method on an Integer Property to get it as a bindable string!
         var vbox = new VBox();
 
 
@@ -107,8 +108,9 @@ public class ChallengeScene extends BaseScene {
         scoreText.textProperty().bindBidirectional(game.score.asObject(), new StringConverter<Integer>() {
             @Override
             public String toString(Integer integer) {
-                return "Score: "+integer.toString();
+                return "Score: " + integer.toString();
             }
+
             @Override
             public Integer fromString(String s) {
                 return null;
@@ -122,8 +124,9 @@ public class ChallengeScene extends BaseScene {
         levelText.textProperty().bindBidirectional(game.level.asObject(), new StringConverter<Integer>() {
             @Override
             public String toString(Integer integer) {
-                return "Level: "+integer.toString();
+                return "Level: " + integer.toString();
             }
+
             @Override
             public Integer fromString(String s) {
                 return null;
@@ -137,8 +140,9 @@ public class ChallengeScene extends BaseScene {
         livesText.textProperty().bindBidirectional(game.lives.asObject(), new StringConverter<Integer>() {
             @Override
             public String toString(Integer integer) {
-                return "Lives: "+integer.toString();
+                return "Lives: " + integer.toString();
             }
+
             @Override
             public Integer fromString(String s) {
                 return null;
@@ -152,8 +156,9 @@ public class ChallengeScene extends BaseScene {
         multiplierText.textProperty().bindBidirectional(game.multiplier.asObject(), new StringConverter<Integer>() {
             @Override
             public String toString(Integer integer) {
-                return "Multiplier: "+integer.toString();
+                return "Multiplier: " + integer.toString();
             }
+
             @Override
             public Integer fromString(String s) {
                 return null;

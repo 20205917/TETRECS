@@ -174,6 +174,7 @@ public class Game {
         //we store the coordinates of the blocks that are full in a hashset
         //after we have iterated through the columns,we clear the row and reset the blocks that are full
 
+        int clearedLine = 0;
         for (int i = 0; i < rows; i++) {
             var fullRow = true;
             for (int j = 0; j < cols; j++) {
@@ -183,6 +184,7 @@ public class Game {
                 }
             }
             if (fullRow) {
+                clearedLine++;
                 for (int j = 0; j < cols; j++) {
                     hashSet.add(new GameBlockCoordinate(i, j));
                 }
@@ -198,6 +200,7 @@ public class Game {
                 }
             }
             if (fullCol) {
+                clearedLine++;
                 for (int j = 0; j < rows; j++) {
                     hashSet.add(new GameBlockCoordinate(j, i));
                 }
@@ -210,6 +213,41 @@ public class Game {
         }
 
 
+        score(clearedLine, hashSet.size());
+
+        //The multiplier is increased by 1 if the next piece also clears lines. It is increased after the score for the cleared set of lines is applied
+        //The multiplier is reset to 1 when a piece is placed that doesn't clear any lines
+        if (clearedLine == 0) {
+            multiplier.set(1);
+        } else {
+            multiplier.set(multiplier.get() + 1);
+        }
+
+        //The level should increase per 1000 points (at the start, you begin at level 0.After
+        //1000 points, you reach level 1.At 3000 points you would be level 3)
+        level.set(score.get() / 1000);
+
+    }
+
+    /**
+     * score method which takes the number of lines and numberof blocks
+     * and call it in afterPiece. It should add a score based on the following formula:
+     * number of lines * number of grid blocks cleared * 10 * the current multiplier
+     * lf no lines are cleared, no score is added
+     * For example, if a piece was added that cleared 2 intersecting lines,
+     * 2 lines would becleared and 9 blocks would be cleared (because 1 block appears
+     * in two lines but iscounted only once) - this would be 180 points with a 1 times multiplier
+     * (comparedto 200 points if 2 non-intersectina lines were cleared at the same time)
+     *
+     * @param lines  number of lines cleared
+     * @param blocks number of blocks cleared
+     */
+    public void score(int lines, int blocks) {
+        if (lines == 0) {
+            return;
+        }
+        var score = lines * blocks * 10 * multiplier.get();
+        this.score.set(this.score.get() + score);
     }
 
 
