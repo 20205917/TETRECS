@@ -52,7 +52,6 @@ public class ChallengeScene extends BaseScene {
         root.getChildren().add(challengePane);
 
 
-
         var mainPane = new BorderPane();
         challengePane.getChildren().add(mainPane);
 
@@ -102,6 +101,7 @@ public class ChallengeScene extends BaseScene {
         scene.setOnKeyPressed(event -> {
             switch (event.getCode()) {
                 case ESCAPE:
+                    quit();
                     gameWindow.startMenu();
                     break;
                 default:
@@ -110,6 +110,11 @@ public class ChallengeScene extends BaseScene {
         });
 
         game.start();
+    }
+
+    private void quit() {
+        //before we quit, we need to reset the game
+        game = null;//this will allow the garbage collector to clean up the game object
     }
 
     /**
@@ -166,7 +171,6 @@ public class ChallengeScene extends BaseScene {
         });
         levelText.getStyleClass().add("level");
         vbox.getChildren().add(levelText);
-
 
 
         var multiplierText = new Text();
