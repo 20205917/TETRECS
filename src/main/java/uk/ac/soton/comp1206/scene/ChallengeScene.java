@@ -11,6 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
 import uk.ac.soton.comp1206.component.GameBoard;
+import uk.ac.soton.comp1206.component.PieceBoard;
 import uk.ac.soton.comp1206.game.Game;
 import uk.ac.soton.comp1206.ui.GamePane;
 import uk.ac.soton.comp1206.ui.GameWindow;
@@ -50,16 +51,21 @@ public class ChallengeScene extends BaseScene {
         challengePane.getStyleClass().add("menu-background");
         root.getChildren().add(challengePane);
 
-        var vbox = addStatePanel();
-        vbox.setPadding(new Insets(10, 10, 10, 10));
 
 
         var mainPane = new BorderPane();
         challengePane.getChildren().add(mainPane);
 
-        mainPane.setLeft(vbox);
+        //Add the state panel to the left of the screen
+        var statePanel = addStatePanel();
+        statePanel.setPadding(new Insets(10, 10, 10, 10));
+        mainPane.setLeft(statePanel);
 
-        var board = new GameBoard(game.getGrid(), gameWindow.getWidth() / 2, gameWindow.getWidth() / 2);
+        //Add the piece board to the right of the screen
+        var pieceBoard = getPieceBoard();
+        mainPane.setRight(pieceBoard);
+
+        var board = new GameBoard(game.getGrid(), gameWindow.getWidth() / 2.0, gameWindow.getWidth() / 2.0);
         mainPane.setCenter(board);
 
         //Handle block on gameboard grid being clicked
@@ -169,6 +175,10 @@ public class ChallengeScene extends BaseScene {
         vbox.getChildren().add(multiplierText);
 
         return vbox;
+    }
+
+    public PieceBoard getPieceBoard() {
+        return new PieceBoard(gameWindow.getWidth() / 4.0, gameWindow.getWidth() / 4.0);
     }
 
 }

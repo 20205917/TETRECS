@@ -5,7 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
 import uk.ac.soton.comp1206.component.GameBlockCoordinate;
-import uk.ac.soton.comp1206.component.Multimedia;
+import uk.ac.soton.comp1206.utils.Multimedia;
 
 import java.util.HashSet;
 import java.util.Random;

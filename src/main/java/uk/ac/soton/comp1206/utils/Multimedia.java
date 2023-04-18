@@ -1,8 +1,7 @@
-package uk.ac.soton.comp1206.component;
+package uk.ac.soton.comp1206.utils;
 
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.game.Game;
