@@ -1,5 +1,6 @@
 package uk.ac.soton.comp1206.game;
 
+import javafx.beans.property.SimpleIntegerProperty;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
@@ -36,6 +37,19 @@ public class Game {
      */
     protected GamePiece currentPiece;
 
+    /**
+     * Add bindable properties for the score, level,
+     * lives and multiplier to the Game class,with appropriate accessor methods.
+     * These should default to 0 score, level 0 , 3 lives and 1 x multiplier respectively.
+     */
+    public SimpleIntegerProperty score;
+
+    public SimpleIntegerProperty level;
+
+    public SimpleIntegerProperty lives;
+
+    public SimpleIntegerProperty multiplier;
+
 
     /**
      * Create a new game with the specified rows and columns. Creates a corresponding grid model.
@@ -49,6 +63,13 @@ public class Game {
 
         //Create a new grid model to represent the game state
         this.grid = new Grid(cols, rows);
+
+        //Initialise the properties
+        this.score = new SimpleIntegerProperty(0);
+        this.level = new SimpleIntegerProperty(0);
+        this.lives = new SimpleIntegerProperty(3);
+        this.multiplier = new SimpleIntegerProperty(1);
+
     }
 
     /**

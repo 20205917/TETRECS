@@ -1,6 +1,12 @@
 package uk.ac.soton.comp1206.scene;
 
+import javafx.beans.property.Property;
+import javafx.geometry.Insets;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.util.StringConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
@@ -19,6 +25,7 @@ public class ChallengeScene extends BaseScene {
 
     /**
      * Create a new Single Player challenge scene
+     *
      * @param gameWindow the Game Window
      */
     public ChallengeScene(GameWindow gameWindow) {
@@ -35,7 +42,7 @@ public class ChallengeScene extends BaseScene {
 
         setupGame();
 
-        root = new GamePane(gameWindow.getWidth(),gameWindow.getHeight());
+        root = new GamePane(gameWindow.getWidth(), gameWindow.getHeight());
 
         var challengePane = new StackPane();
         challengePane.setMaxWidth(gameWindow.getWidth());
@@ -43,10 +50,18 @@ public class ChallengeScene extends BaseScene {
         challengePane.getStyleClass().add("menu-background");
         root.getChildren().add(challengePane);
 
+        var vbox = addStatePanel();
+        vbox.setPadding(new Insets(10, 10, 10, 10));
+
+
+
+
         var mainPane = new BorderPane();
         challengePane.getChildren().add(mainPane);
 
-        var board = new GameBoard(game.getGrid(),gameWindow.getWidth()/2,gameWindow.getWidth()/2);
+        mainPane.setLeft(vbox);
+
+        var board = new GameBoard(game.getGrid(), gameWindow.getWidth() / 2, gameWindow.getWidth() / 2);
         mainPane.setCenter(board);
 
         //Handle block on gameboard grid being clicked
@@ -55,6 +70,7 @@ public class ChallengeScene extends BaseScene {
 
     /**
      * Handle when a block is clicked
+     *
      * @param gameBlock the Game Block that was clocked
      */
     private void blockClicked(GameBlock gameBlock) {
@@ -78,6 +94,76 @@ public class ChallengeScene extends BaseScene {
     public void initialise() {
         logger.info("Initialising Challenge");
         game.start();
+    }
+
+
+    public VBox addStatePanel(){
+        //Add Ul elements to show the score, level, multiplier and lives in the ChallengeScene bybinding to the game properties.
+        //Tip: Use the .asString method on an Integer Property to get it as a bindable string!
+        var vbox = new VBox();
+
+
+        var scoreText = new Text();
+        scoreText.textProperty().bindBidirectional(game.score.asObject(), new StringConverter<Integer>() {
+            @Override
+            public String toString(Integer integer) {
+                return "Score: "+integer.toString();
+            }
+            @Override
+            public Integer fromString(String s) {
+                return null;
+            }
+        });
+        scoreText.setFont(new Font(20));
+        scoreText.setFill(Color.WHITE);
+        vbox.getChildren().add(scoreText);
+
+        var levelText = new Text();
+        levelText.textProperty().bindBidirectional(game.level.asObject(), new StringConverter<Integer>() {
+            @Override
+            public String toString(Integer integer) {
+                return "Level: "+integer.toString();
+            }
+            @Override
+            public Integer fromString(String s) {
+                return null;
+            }
+        });
+        levelText.setFont(new Font(20));
+        levelText.setFill(Color.WHITE);
+        vbox.getChildren().add(levelText);
+
+        var livesText = new Text();
+        livesText.textProperty().bindBidirectional(game.lives.asObject(), new StringConverter<Integer>() {
+            @Override
+            public String toString(Integer integer) {
+                return "Lives: "+integer.toString();
+            }
+            @Override
+            public Integer fromString(String s) {
+                return null;
+            }
+        });
+        livesText.setFont(new Font(20));
+        livesText.setFill(Color.WHITE);
+        vbox.getChildren().add(livesText);
+
+        var multiplierText = new Text();
+        multiplierText.textProperty().bindBidirectional(game.multiplier.asObject(), new StringConverter<Integer>() {
+            @Override
+            public String toString(Integer integer) {
+                return "Multiplier: "+integer.toString();
+            }
+            @Override
+            public Integer fromString(String s) {
+                return null;
+            }
+        });
+        multiplierText.setFont(new Font(20));
+        multiplierText.setFill(Color.WHITE);
+        vbox.getChildren().add(multiplierText);
+
+        return vbox;
     }
 
 }
