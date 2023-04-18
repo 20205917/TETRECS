@@ -169,4 +169,14 @@ public class GameWindow {
     public Communicator getCommunicator() {
         return communicator;
     }
+
+    public void startIntro() {
+        //TODO: Implement this method
+
+    }
+
+    public void close() {
+        System.exit(0);
+    }
+
 }
