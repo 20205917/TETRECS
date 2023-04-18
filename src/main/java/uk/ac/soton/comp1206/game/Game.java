@@ -86,6 +86,7 @@ public class Game {
     public void initialiseGame() {
         logger.info("Initialising game");
         //When the game is initialised, spawn a new GamePiece and set it as the currentPiece
+        Multimedia.stopMusic();
         Multimedia.playMusic("game.wav");
         currentPiece = spawnPiece();
     }

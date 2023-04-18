@@ -170,13 +170,6 @@ public class GameWindow {
         return communicator;
     }
 
-    public void startIntro() {
-        //TODO: Implement this method
 
-    }
-
-    public void close() {
-        System.exit(0);
-    }
 
 }

@@ -97,6 +97,18 @@ public class ChallengeScene extends BaseScene {
     @Override
     public void initialise() {
         logger.info("Initialising Challenge");
+        //add keyboard listener
+        //esc to go back to menu
+        scene.setOnKeyPressed(event -> {
+            switch (event.getCode()) {
+                case ESCAPE:
+                    gameWindow.startMenu();
+                    break;
+                default:
+                    break;
+            }
+        });
+
         game.start();
     }
 
@@ -122,25 +134,8 @@ public class ChallengeScene extends BaseScene {
                 return null;
             }
         });
-        scoreText.setFont(new Font(20));
-        scoreText.setFill(Color.WHITE);
+        scoreText.getStyleClass().add("score");
         vbox.getChildren().add(scoreText);
-
-        var levelText = new Text();
-        levelText.textProperty().bindBidirectional(game.level.asObject(), new StringConverter<Integer>() {
-            @Override
-            public String toString(Integer integer) {
-                return "Level: " + integer.toString();
-            }
-
-            @Override
-            public Integer fromString(String s) {
-                return null;
-            }
-        });
-        levelText.setFont(new Font(20));
-        levelText.setFill(Color.WHITE);
-        vbox.getChildren().add(levelText);
 
         var livesText = new Text();
         livesText.textProperty().bindBidirectional(game.lives.asObject(), new StringConverter<Integer>() {
@@ -154,9 +149,25 @@ public class ChallengeScene extends BaseScene {
                 return null;
             }
         });
-        livesText.setFont(new Font(20));
-        livesText.setFill(Color.WHITE);
+        livesText.getStyleClass().add("lives");
         vbox.getChildren().add(livesText);
+
+        var levelText = new Text();
+        levelText.textProperty().bindBidirectional(game.level.asObject(), new StringConverter<Integer>() {
+            @Override
+            public String toString(Integer integer) {
+                return "Level: " + integer.toString();
+            }
+
+            @Override
+            public Integer fromString(String s) {
+                return null;
+            }
+        });
+        levelText.getStyleClass().add("level");
+        vbox.getChildren().add(levelText);
+
+
 
         var multiplierText = new Text();
         multiplierText.textProperty().bindBidirectional(game.multiplier.asObject(), new StringConverter<Integer>() {
@@ -170,8 +181,7 @@ public class ChallengeScene extends BaseScene {
                 return null;
             }
         });
-        multiplierText.setFont(new Font(20));
-        multiplierText.setFill(Color.WHITE);
+        multiplierText.getStyleClass().add("level");
         vbox.getChildren().add(multiplierText);
 
         return vbox;

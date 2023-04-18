@@ -26,6 +26,8 @@ public class Multimedia {
 
     private static int musicVolume = 1;
 
+    private static boolean playing = false;
+
 
     private static final Logger logger = LogManager.getLogger(Game.class);
 
@@ -52,10 +54,19 @@ public class Multimedia {
             musicPlayer.setVolume(musicVolume);
             musicPlayer.setCycleCount(MediaPlayer.INDEFINITE);
             musicPlayer.play();
+            playing = true;
             //wait here
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("Unable to play music file");
+        }
+    }
+
+    //stop music
+    public static void stopMusic() {
+        if (playing) {
+            musicPlayer.stop();
+            playing = false;
         }
     }
 

@@ -5,6 +5,7 @@ import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
@@ -36,6 +37,9 @@ public class MenuScene extends BaseScene {
      */
     @Override
     public void build() {
+        //add keyboard listener to the scene
+
+
         logger.info("Building " + this.getClass().getName());
 
         root = new GamePane(gameWindow.getWidth(), gameWindow.getHeight());
@@ -90,7 +94,7 @@ public class MenuScene extends BaseScene {
         var introButton = new Button("How to Play?");
         introButton.getStyleClass().add("menuItem");
         introButton.setOnAction(event -> {
-            gameWindow.startIntro();
+            startIntro();
         });
         rBox.getChildren().add(introButton);
 
@@ -105,7 +109,7 @@ public class MenuScene extends BaseScene {
         var exitButton = new Button("Exit");
         exitButton.getStyleClass().add("menuItem");
         exitButton.setOnAction(event -> {
-            gameWindow.close();
+            close();
         });
         rBox.getChildren().add(exitButton);
 
@@ -118,7 +122,19 @@ public class MenuScene extends BaseScene {
     @Override
     public void initialise() {
         //play the menu music
+        logger.info("Initialising " + this.getClass().getName());
+
+        Multimedia.stopMusic();
         Multimedia.playMusic("menu.mp3");
+        //add keyboard listener to the scene
+        //esc quit game
+        scene.setOnKeyPressed(event -> {
+            switch (event.getCode()) {
+                case ESCAPE -> close();
+                case ENTER -> startGame(null);
+            }
+        });
+
     }
 
     /**
@@ -128,6 +144,15 @@ public class MenuScene extends BaseScene {
      */
     private void startGame(ActionEvent event) {
         gameWindow.startChallenge();
+    }
+
+    public void startIntro() {
+        //TODO: Implement this method
+
+    }
+
+    public void close() {
+        System.exit(0);
     }
 
 }
