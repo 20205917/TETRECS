@@ -1,11 +1,18 @@
 package uk.ac.soton.comp1206.scene;
 
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.geometry.Insets;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 import javafx.util.StringConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,6 +46,10 @@ public class ChallengeScene extends BaseScene {
     //keep the track of Position
     protected int XPosition;
     protected int YPosition;
+
+    protected ProgressBar progressBar;
+
+    private Timeline timeline;
 
     /**
      * Create a new Single Player challenge scene
@@ -82,14 +93,20 @@ public class ChallengeScene extends BaseScene {
         vBox.setSpacing(30);
 
         //displays the current piece in a pieceBoard object
-        currentPiece = new PieceBoard(gameWindow.getWidth()/6.0,gameWindow.getHeight()/6.0);
+        currentPiece = new PieceBoard(gameWindow.getWidth() / 6.0, gameWindow.getHeight() / 6.0);
         currentPiece.getStyleClass().add("gameBox");
         vBox.getChildren().add(currentPiece);
 
         //displays the next piece in a pieceBoard object
-        followingPiece = new PieceBoard(gameWindow.getWidth()/11.0,gameWindow.getHeight()/11.0);
+        followingPiece = new PieceBoard(gameWindow.getWidth() / 11.0, gameWindow.getHeight() / 11.0);
         followingPiece.getStyleClass().add("gameBox");
         vBox.getChildren().add(followingPiece);
+
+        progressBar = new ProgressBar();
+        progressBar.setPrefWidth(200);
+        progressBar.setPrefHeight(20);
+        progressBar.setProgress(0);
+        vBox.getChildren().add(progressBar);
 
         mainPane.setRight(vBox);
 
@@ -99,15 +116,14 @@ public class ChallengeScene extends BaseScene {
         board.getStyleClass().add("gameBox1");
 
 
-
         //Handle block on gameBoard grid being clicked
         board.setOnBlockClick(this::blockClicked);
 
         //Handle rotation on block when right-clicked
-        board.setOnRightClick((gameBlock)-> rightRotate());
+        board.setOnRightClick((gameBlock) -> rightRotate());
 
         //Handle rotation on block when pieceBoard grid is clicked
-        currentPiece.setOnBlockClick((gameBlock)-> rightRotate());
+        currentPiece.setOnBlockClick((gameBlock) -> rightRotate());
     }
 
     /**
@@ -122,7 +138,7 @@ public class ChallengeScene extends BaseScene {
     /**
      * reset the next currentPiece and next followingPiece on the pieceBoard
      */
-    protected void nextPiece(GamePiece nextCurrentPiece,GamePiece nextFollowingPiece) {
+    protected void nextPiece(GamePiece nextCurrentPiece, GamePiece nextFollowingPiece) {
         this.currentPiece.setPiece(nextCurrentPiece);
         this.followingPiece.setPiece(nextFollowingPiece);
     }
@@ -148,7 +164,7 @@ public class ChallengeScene extends BaseScene {
     /**
      * swaps the current piece with the following one and reset
      */
-    public void swapPiece(){
+    public void swapPiece() {
         game.swapCurrentPiece();
         currentPiece.setPiece(game.getCurrentPiece());
         followingPiece.setPiece(game.getFollowingPiece());
@@ -157,9 +173,10 @@ public class ChallengeScene extends BaseScene {
 
     /**
      * handles the fade out animation on the board
+     *
      * @param blockCoordinates include the blocks to be faded
      */
-    public void clearedLine(HashSet<GameBlockCoordinate> blockCoordinates){
+    public void clearedLine(HashSet<GameBlockCoordinate> blockCoordinates) {
         board.fadeOutLine(blockCoordinates);
     }
 
@@ -191,10 +208,19 @@ public class ChallengeScene extends BaseScene {
         game.setLineClearedListener(this::clearedLine);
 
         //listens to when a game loop starts and calls the respective in class method
-        //game.setGameLooplistener(this::gameLoop);
-
+        game.setGameLooplistener((delay) -> {
+            //update the time label
+            timeline=new Timeline(
+                    new KeyFrame(Duration.ZERO, new KeyValue(progressBar.progressProperty(), 1)),
+                    new KeyFrame(Duration.millis(delay), e -> {
+                    }, new KeyValue(progressBar.progressProperty(), 0))
+            );
+            timeline.setCycleCount(Animation.INDEFINITE);
+            timeline.play();
+        });
         game.start();
     }
+
 
     /**
      * handles the events that occur when a key is pressed
@@ -202,54 +228,54 @@ public class ChallengeScene extends BaseScene {
      *
      * @param event have the type of the pressed key
      */
-    public void keyPressed(KeyEvent event){
+    public void keyPressed(KeyEvent event) {
 
         switch (event.getCode()) {
             //when escape is pressed the game is stopped and the player is brought
             //back to the menu
-            case ESCAPE->{
+            case ESCAPE -> {
                 quit();
                 //game.stop();
                 gameWindow.startMenu();
             }
             //when space or r is pressed the pieces swapPiece
-            case SPACE,R -> swapPiece();
+            case SPACE, R -> swapPiece();
 
             //when enter or x is pressed the block is placed
-            case ENTER,X -> blockClicked(board.getBlock(XPosition,YPosition));
+            case ENTER, X -> blockClicked(board.getBlock(XPosition, YPosition));
 
             //when right arrow or D is pressed the block is moved one block to the right
-            case RIGHT,D -> {
-                if(XPosition < game.getCols() - 1 ){
+            case RIGHT, D -> {
+                if (XPosition < game.getCols() - 1) {
                     XPosition++;
                 }
             }
 
             //when left arrow or A is pressed , the block is moved one block to the left
-            case LEFT,A -> {
-                if(XPosition > 0){
+            case LEFT, A -> {
+                if (XPosition > 0) {
                     XPosition--;
                 }
             }
 
             //when up arrow or W is pressed , the block is moved one block up
-            case UP,W -> {
-                if(YPosition > 0){
+            case UP, W -> {
+                if (YPosition > 0) {
                     YPosition--;
                 }
             }
 
             //when downwards arrow or S is pressed ,  the block is moved one block down
-            case DOWN,S -> {
-                if(YPosition < game.getRows() - 1 ){
+            case DOWN, S -> {
+                if (YPosition < game.getRows() - 1) {
                     YPosition++;
                 }
             }
             //when the open bracket or q is pressed the block rotates to the left
-            case OPEN_BRACKET,Q,Z->leftRotate();
+            case OPEN_BRACKET, Q, Z -> leftRotate();
 
             //when the close bracket or e is pressed the block rotates to the right
-            case CLOSE_BRACKET,E,C->rightRotate();
+            case CLOSE_BRACKET, E, C -> rightRotate();
         }
     }
 

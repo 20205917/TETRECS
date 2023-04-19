@@ -1,5 +1,6 @@
 package uk.ac.soton.comp1206.game;
 
+import javafx.animation.Timeline;
 import javafx.beans.property.SimpleIntegerProperty;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,6 +13,10 @@ import uk.ac.soton.comp1206.utils.Multimedia;
 
 import java.util.HashSet;
 import java.util.Random;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The Game class handles the main logic, state and properties of the TetrECS game. Methods to manipulate the game state
@@ -45,6 +50,11 @@ public class Game {
      * This will keep track of the following piece
      */
     protected GamePiece followingPiece;
+
+    private ScheduledExecutorService executor;
+
+    //future that will be used to schedule the game loop
+    private ScheduledFuture<?> future;
 
 
     /*
@@ -87,12 +97,40 @@ public class Game {
         this.level = new SimpleIntegerProperty(0);
         this.lives = new SimpleIntegerProperty(3);
         this.multiplier = new SimpleIntegerProperty(1);
-        this.followingPiece= spawnPiece();
+        this.followingPiece = spawnPiece();
+        this.executor = new ScheduledThreadPoolExecutor(1);
+        this.future = this.executor.schedule(this::gameLoop, getTimerDelay(), TimeUnit.MILLISECONDS);
+        this.gameLooplistener.loop(getTimerDelay());
+    }
+
+    /**
+     * lmplement a Timer or ScheduledExecutorService inside the Game class which calls agameLoop method
+     * This should be started when the game starts and repeat at the interval specified by
+     * the getTimerDelay function
+     * When gameLoop fires (the timer reaches 0): lose a life, the current piece isdiscarded and the timer restarts.The multiplier is set back to 1.
+     * The timer should be reset when a piece is played, to the new timer delay (whichmay have changed)
+     */
+    public void gameLoop() {
+        //when gameLoop fires
+        //lose a life
+        this.lives.set(this.lives.get() - 1);
+        //if lives touch 0, the game is over
+        if (this.lives.get() == 0) {
+            this.executor.shutdown();
+        }
+        nextPiece();
+        //the multiplier is set back to 1
+        this.multiplier.set(1);
+        long delay=getTimerDelay();
+        //the timer restarts
+        this.future = this.executor.schedule(this::gameLoop,delay , TimeUnit.MILLISECONDS);
+        this.gameLooplistener.loop(delay);
     }
 
     public void setNextPieceListener(NextPieceListener nextPieceListener) {
         this.nextPieceListener = nextPieceListener;
     }
+
     public void setLineClearedListener(LineClearedListener lineClearedListener) {
         this.lineClearedListener = lineClearedListener;
     }
@@ -141,8 +179,7 @@ public class Game {
             //clear the row and reset the blocks that are full
             afterPiece();
             Multimedia.playAudio("place.wav");
-        }
-        else {// placement of the piece failed
+        } else {// placement of the piece failed
             logger.info("Cannot place piece!");
             Multimedia.playAudio("fail.wav");
         }
@@ -176,7 +213,8 @@ public class Game {
 
         //reset two Pieces
         if (nextPieceListener != null) {
-            nextPieceListener.nextPiece(currentPiece,followingPiece);}
+            nextPieceListener.nextPiece(currentPiece, followingPiece);
+        }
         logger.info("The next piece is: {}", followingPiece);
     }
 
@@ -190,7 +228,7 @@ public class Game {
     /**
      * swaps the current piece with the next one and vice versa
      */
-    public void swapCurrentPiece(){
+    public void swapCurrentPiece() {
         GamePiece piece = getCurrentPiece();
         currentPiece = getFollowingPiece();
         followingPiece = piece;
@@ -251,7 +289,7 @@ public class Game {
         }
 
         //Trigger fade out animation
-        if(lineClearedListener != null){
+        if (lineClearedListener != null) {
             lineClearedListener.lineCleared(hashSet);
         }
 
@@ -269,6 +307,10 @@ public class Game {
         //1000 points, you reach level 1.At 3000 points you would be level 3)
         level.set(score.get() / 1000);
 
+        //reset the scheduler
+        this.future.cancel(false);
+        this.future = this.executor.schedule(this::gameLoop,getTimerDelay() , TimeUnit.MILLISECONDS);
+        this.gameLooplistener.loop(getTimerDelay());
     }
 
     /**
@@ -322,18 +364,35 @@ public class Game {
 
     /**
      * Get the following piece of the game
+     *
      * @return teh following piece
      */
-    public GamePiece getFollowingPiece(){
+    public GamePiece getFollowingPiece() {
         return followingPiece;
     }
 
     /**
      * Get the current piece of the game
+     *
      * @return the current piece
      */
-    public GamePiece getCurrentPiece(){
+    public GamePiece getCurrentPiece() {
         return currentPiece;
     }
+
+
+    /**
+     * Calculate the delay at the maximum of either 2500 milliseconds or 12000 - 500*the current level
+     * So it'll start at 12000, then drop to 11500, then 11000 and keep on going
+     * until itreaches 2500 at which point it won't drop any lower
+     */
+    public long getTimerDelay() {
+        var delay = 12000 - 500 * level.get();
+        if (delay < 2500) {
+            delay = 2500;
+        }
+        return delay;
+    }
+
 
 }
