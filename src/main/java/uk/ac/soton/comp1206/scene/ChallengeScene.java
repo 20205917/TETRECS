@@ -295,63 +295,23 @@ public class ChallengeScene extends BaseScene {
 
 
         var scoreText = new Text();
-        scoreText.textProperty().bindBidirectional(game.score.asObject(), new StringConverter<Integer>() {
-            @Override
-            public String toString(Integer integer) {
-                return "Score: " + integer.toString();
-            }
-
-            @Override
-            public Integer fromString(String s) {
-                return null;
-            }
-        });
+        scoreText.textProperty().bind(game.score.asString("Score: %d"));
         scoreText.getStyleClass().add("score");
         vbox.getChildren().add(scoreText);
 
         var livesText = new Text();
-        livesText.textProperty().bindBidirectional(game.lives.asObject(), new StringConverter<Integer>() {
-            @Override
-            public String toString(Integer integer) {
-                return "Lives: " + integer.toString();
-            }
-
-            @Override
-            public Integer fromString(String s) {
-                return null;
-            }
-        });
+        livesText.textProperty().bind(game.lives.asString("Lives: %d"));
         livesText.getStyleClass().add("lives");
         vbox.getChildren().add(livesText);
 
         var levelText = new Text();
-        levelText.textProperty().bindBidirectional(game.level.asObject(), new StringConverter<Integer>() {
-            @Override
-            public String toString(Integer integer) {
-                return "Level: " + integer.toString();
-            }
-
-            @Override
-            public Integer fromString(String s) {
-                return null;
-            }
-        });
+        levelText.textProperty().bind(game.level.asString("Level: %d"));
         levelText.getStyleClass().add("level");
         vbox.getChildren().add(levelText);
 
 
         var multiplierText = new Text();
-        multiplierText.textProperty().bindBidirectional(game.multiplier.asObject(), new StringConverter<Integer>() {
-            @Override
-            public String toString(Integer integer) {
-                return "Multiplier: " + integer.toString();
-            }
-
-            @Override
-            public Integer fromString(String s) {
-                return null;
-            }
-        });
+        multiplierText.textProperty().bind(game.multiplier.asString("Multiplier: %d"));
         multiplierText.getStyleClass().add("level");
         vbox.getChildren().add(multiplierText);
 

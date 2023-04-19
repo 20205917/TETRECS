@@ -100,7 +100,7 @@ public class Game {
         this.followingPiece = spawnPiece();
         this.executor = new ScheduledThreadPoolExecutor(1);
         this.future = this.executor.schedule(this::gameLoop, getTimerDelay(), TimeUnit.MILLISECONDS);
-        this.gameLooplistener.loop(getTimerDelay());
+
     }
 
     /**
@@ -152,6 +152,7 @@ public class Game {
      */
     public void initialiseGame() {
         logger.info("Initialising game");
+        this.gameLooplistener.loop(getTimerDelay());
         //When the game is initialised, spawn a new GamePiece and set it as the currentPiece
         Multimedia.stopMusic();
         Multimedia.playMusic("game.wav");
