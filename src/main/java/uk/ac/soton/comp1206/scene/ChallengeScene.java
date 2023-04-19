@@ -10,6 +10,7 @@ import javafx.util.StringConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
+import uk.ac.soton.comp1206.component.GameBlockCoordinate;
 import uk.ac.soton.comp1206.component.GameBoard;
 import uk.ac.soton.comp1206.component.PieceBoard;
 import uk.ac.soton.comp1206.game.Game;
@@ -18,23 +19,27 @@ import uk.ac.soton.comp1206.ui.GamePane;
 import uk.ac.soton.comp1206.ui.GameWindow;
 import uk.ac.soton.comp1206.utils.Multimedia;
 
+import java.util.HashSet;
+
 /**
  * The Single Player challenge scene. Holds the UI for the single player challenge mode in the game.
  */
 public class ChallengeScene extends BaseScene {
 
     private static final Logger logger = LogManager.getLogger(MenuScene.class);
+
     protected Game game;
 
     //holds the current piece
     protected PieceBoard currentPiece;
-    //holds the next piece
+    //holds the following piece
     protected PieceBoard followingPiece;
-
+    //holds the Game Board
     protected GameBoard board;
     //keep the track of Position
     protected int XPosition;
     protected int YPosition;
+
     /**
      * Create a new Single Player challenge scene
      *
@@ -114,7 +119,6 @@ public class ChallengeScene extends BaseScene {
         game.blockClicked(gameBlock);
     }
 
-
     /**
      * reset the next currentPiece and next followingPiece on the pieceBoard
      */
@@ -152,6 +156,14 @@ public class ChallengeScene extends BaseScene {
     }
 
     /**
+     * handles the fade out animation on the board
+     * @param blockCoordinates include the blocks to be faded
+     */
+    public void clearedLine(HashSet<GameBlockCoordinate> blockCoordinates){
+        board.fadeOutLine(blockCoordinates);
+    }
+
+    /**
      * Set up the game object and model
      */
     public void setupGame() {
@@ -161,7 +173,6 @@ public class ChallengeScene extends BaseScene {
         game = new Game(5, 5);
 
     }
-
 
     /**
      * Initialise the scene and start the game
@@ -175,6 +186,12 @@ public class ChallengeScene extends BaseScene {
 
         //listens to when a key is pressed and calls the respective in class method
         scene.setOnKeyPressed(this::keyPressed);
+
+        //listens to when a line is cleared and calls the respective in class method
+        game.setLineClearedListener(this::clearedLine);
+
+        //listens to when a game loop starts and calls the respective in class method
+        //game.setGameLooplistener(this::gameLoop);
 
         game.start();
     }

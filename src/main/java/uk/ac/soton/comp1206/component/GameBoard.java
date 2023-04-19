@@ -1,6 +1,5 @@
 package uk.ac.soton.comp1206.component;
 
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import org.apache.logging.log4j.LogManager;
@@ -8,6 +7,8 @@ import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.event.BlockClickedListener;
 import uk.ac.soton.comp1206.event.RightClickedListener;
 import uk.ac.soton.comp1206.game.Grid;
+
+import java.util.HashSet;
 
 /**
  * A GameBoard is a visual component to represent the visual GameBoard.
@@ -158,6 +159,16 @@ public class GameBoard extends GridPane {
         block.setOnMouseClicked((e) -> blockClicked(e, block));
 
         return block;
+    }
+
+    /**
+     * fades out a series of blocks
+     * @param blockCoordinates are the coordinates of the block
+     */
+    public void fadeOutLine(HashSet<GameBlockCoordinate> blockCoordinates){
+        for(GameBlockCoordinate coordinates : blockCoordinates){
+            getBlock(coordinates.getX(), coordinates.getY()).fadeOut();
+        }
     }
 
     /**

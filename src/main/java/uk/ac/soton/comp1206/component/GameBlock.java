@@ -1,12 +1,16 @@
 package uk.ac.soton.comp1206.component;
 
+import javafx.animation.AnimationTimer;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.HashSet;
 
 /**
  * The Visual User Interface component representing a single block in the grid.
@@ -122,11 +126,11 @@ public class GameBlock extends Canvas {
         gc.clearRect(0,0,width,height);
 
         //Fill
-        gc.setFill(Color.WHITE);
+        gc.setFill(Color.TRANSPARENT);
         gc.fillRect(0,0, width, height);
 
         //Border
-        gc.setStroke(Color.BLACK);
+        gc.setStroke(Color.WHITE);
         gc.strokeRect(0,0,width,height);
     }
 
@@ -144,9 +148,41 @@ public class GameBlock extends Canvas {
         gc.setFill(colour);
         gc.fillRect(0,0, width, height);
 
+        //Shapes
+        gc.setStroke(Color.WHITE);
+        gc.strokeRoundRect(2.5,2.5,width-5,height-5,10,10);
+        gc.strokeLine(2.5,2.5,width-3,height-3);
+        gc.strokeLine(2.5,height - 3, width -3 ,2.5);
+
         //Border
         gc.setStroke(Color.BLACK);
         gc.strokeRect(0,0,width,height);
+    }
+
+    /**
+     *  starts the animation timer that enables a block to fade out
+     */
+    public void fadeOut(){
+        //The anonymous class implements the Animation Timer interface
+        new AnimationTimer(){
+            //when opacity = 1 ,it's completely opaque
+            private double opacity = 1 ;
+            //override the end of time slice handler
+            @Override
+            public void handle(long l) {
+                paintEmpty();
+                opacity -= 0.05;
+
+                //when the opacity reaches 0 the animation stops
+                if(this.opacity <= 0){
+                    stop();
+                    return;
+                }
+                GraphicsContext gc = getGraphicsContext2D();
+                gc.setFill(Color.color(0, 1, 0, this.opacity));
+                gc.fillRect(0, 0, width, height);
+            }
+        }.start();
     }
 
     /**

@@ -5,6 +5,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
 import uk.ac.soton.comp1206.component.GameBlockCoordinate;
+import uk.ac.soton.comp1206.event.GameLoopListener;
+import uk.ac.soton.comp1206.event.LineClearedListener;
 import uk.ac.soton.comp1206.event.NextPieceListener;
 import uk.ac.soton.comp1206.utils.Multimedia;
 
@@ -50,6 +52,8 @@ public class Game {
         and the termination of the game
      */
     private NextPieceListener nextPieceListener;
+    private LineClearedListener lineClearedListener;
+    private GameLoopListener gameLooplistener;
 
     /**
      * Add bindable properties for the score, level,
@@ -88,6 +92,13 @@ public class Game {
 
     public void setNextPieceListener(NextPieceListener nextPieceListener) {
         this.nextPieceListener = nextPieceListener;
+    }
+    public void setLineClearedListener(LineClearedListener lineClearedListener) {
+        this.lineClearedListener = lineClearedListener;
+    }
+
+    public void setGameLooplistener(GameLoopListener gameLooplistener) {
+        this.gameLooplistener = gameLooplistener;
     }
 
     /**
@@ -239,6 +250,10 @@ public class Game {
             grid.set(coordinate.getX(), coordinate.getY(), 0);
         }
 
+        //Trigger fade out animation
+        if(lineClearedListener != null){
+            lineClearedListener.lineCleared(hashSet);
+        }
 
         score(clearedLine, hashSet.size());
 
