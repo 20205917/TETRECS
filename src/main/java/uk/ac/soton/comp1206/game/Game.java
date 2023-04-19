@@ -117,6 +117,7 @@ public class Game {
         //if lives touch 0, the game is over
         if (this.lives.get() == 0) {
             this.executor.shutdown();
+            //game over
         }
         nextPiece();
         //the multiplier is set back to 1

@@ -1,10 +1,8 @@
 package uk.ac.soton.comp1206.scene;
 
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
+import javafx.animation.*;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.input.KeyEvent;
@@ -90,6 +88,7 @@ public class ChallengeScene extends BaseScene {
 
 
         var vBox = new VBox();
+        vBox.setAlignment(Pos.CENTER);
         vBox.setSpacing(30);
 
         //displays the current piece in a pieceBoard object
@@ -113,7 +112,7 @@ public class ChallengeScene extends BaseScene {
 
         board = new GameBoard(game.getGrid(), gameWindow.getWidth() / 2.0, gameWindow.getWidth() / 2.0);
         mainPane.setCenter(board);
-        board.getStyleClass().add("gameBox1");
+        board.getStyleClass().add("gameBox");
 
 
         //Handle block on gameBoard grid being clicked
@@ -211,9 +210,11 @@ public class ChallengeScene extends BaseScene {
         game.setGameLooplistener((delay) -> {
             //update the time label
             timeline=new Timeline(
-                    new KeyFrame(Duration.ZERO, new KeyValue(progressBar.progressProperty(), 1)),
-                    new KeyFrame(Duration.millis(delay), e -> {
-                    }, new KeyValue(progressBar.progressProperty(), 0))
+                    //green->yellow->red
+                    new KeyFrame(Duration.ZERO, new KeyValue(progressBar.progressProperty(), 1),new KeyValue(progressBar.styleProperty(), " -fx-accent: #00ff00;" )),
+                    new KeyFrame(Duration.millis(delay/3), new KeyValue(progressBar.progressProperty(), 0.66),new KeyValue(progressBar.styleProperty(), " -fx-accent: #ffff00;")),
+                    new KeyFrame(Duration.millis(delay/3*2), new KeyValue(progressBar.progressProperty(), 0.33),new KeyValue(progressBar.styleProperty(), " -fx-accent: #ff0000")),
+                    new KeyFrame(Duration.millis(delay), new KeyValue(progressBar.progressProperty(), 0))
             );
             timeline.setCycleCount(Animation.INDEFINITE);
             timeline.play();
