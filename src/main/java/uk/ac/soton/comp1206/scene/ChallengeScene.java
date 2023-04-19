@@ -28,6 +28,11 @@ public class ChallengeScene extends BaseScene {
     protected PieceBoard currentPiece;
     //holds the next piece
     protected PieceBoard followingPiece;
+
+
+    //keep the track of Position
+    protected int XPosition;
+    protected int YPosition;
     /**
      * Create a new Single Player challenge scene
      *
@@ -154,6 +159,17 @@ public class ChallengeScene extends BaseScene {
         game.rotateCurrentPiece();
         currentPiece.setPiece(game.getCurrentPiece());
         Multimedia.playAudio("rotate.wav");
+    }
+
+    /**
+     * swaps the current piece with the next one and displays
+     * this change in the pieceBoards
+     */
+    public void swapCurrentPiece(){
+        game.swapCurrentPiece();
+        currentPiece.setPiece(game.getCurrentPiece());
+        followingPiece.setPiece(game.getFollowingPiece());
+        Multimedia.playAudio("transition.wav");
     }
 
     private void quit() {

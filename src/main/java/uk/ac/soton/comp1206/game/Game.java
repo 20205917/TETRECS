@@ -39,10 +39,16 @@ public class Game {
      */
     protected GamePiece currentPiece;
 
-    //Add a followingPiece to Game. Initialise it at the start of the game.
+    /**
+     * This will keep track of the following piece
+     */
     protected GamePiece followingPiece;
 
 
+    /*
+       listeners that handle the next piece, the lines cleared, the game loop
+        and the termination of the game
+     */
     private NextPieceListener nextPieceListener;
 
     /**
@@ -132,33 +138,6 @@ public class Game {
     }
 
     /**
-     * Get the grid model inside this game representing the game state of the board
-     *
-     * @return game grid model
-     */
-    public Grid getGrid() {
-        return grid;
-    }
-
-    /**
-     * Get the number of columns in this game
-     *
-     * @return number of columns
-     */
-    public int getCols() {
-        return cols;
-    }
-
-    /**
-     * Get the number of rows in this game
-     *
-     * @return number of rows
-     */
-    public int getRows() {
-        return rows;
-    }
-
-    /**
      * spawnPiece
      * Create a new random GamePiece by calling GamePiece.createPiece with a
      * random number between 0 and the number of pieces
@@ -178,7 +157,6 @@ public class Game {
     /**
      * Replace the current piece with a following Piece
      * Replace the following Piece with a new piece
-     * reset
      */
     public void nextPiece() {
         currentPiece = followingPiece;
@@ -189,6 +167,23 @@ public class Game {
         if (nextPieceListener != null) {
             nextPieceListener.nextPiece(currentPiece,followingPiece);}
         logger.info("The next piece is: {}", followingPiece);
+    }
+
+    /**
+     * rotateCurrentPiece method rotate the next piece
+     */
+    public void rotateCurrentPiece() {
+        currentPiece.rotate();
+    }
+
+    /**
+     * swaps the current piece with the next one and vice versa
+     */
+    public void swapCurrentPiece(){
+        GamePiece piece = getCurrentPiece();
+        currentPiece = getFollowingPiece();
+        followingPiece = piece;
+        logger.info("Swapping Pieces");
     }
 
     /**
@@ -283,13 +278,47 @@ public class Game {
     }
 
     /**
-     * rotateCurrentPiece method rotate the next piece,
-     * using GamePiece's provided rotate method
+     * Get the grid model inside this game representing the game state of the board
+     *
+     * @return game grid model
      */
-    public void rotateCurrentPiece() {
-        currentPiece.rotate();
+    public Grid getGrid() {
+        return grid;
     }
-    public GamePiece getCurrentPiece() {
+
+    /**
+     * Get the number of columns in this game
+     *
+     * @return number of columns
+     */
+    public int getCols() {
+        return cols;
+    }
+
+    /**
+     * Get the number of rows in this game
+     *
+     * @return number of rows
+     */
+    public int getRows() {
+        return rows;
+    }
+
+
+    /**
+     * Get the following piece of the game
+     * @return teh following piece
+     */
+    public GamePiece getFollowingPiece(){
+        return followingPiece;
+    }
+
+    /**
+     * Get the current piece of the game
+     * @return the current piece
+     */
+    public GamePiece getCurrentPiece(){
         return currentPiece;
     }
+
 }
