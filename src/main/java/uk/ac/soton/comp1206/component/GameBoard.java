@@ -1,10 +1,12 @@
 package uk.ac.soton.comp1206.component;
 
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.event.BlockClickedListener;
+import uk.ac.soton.comp1206.event.RightClickedListener;
 import uk.ac.soton.comp1206.game.Grid;
 
 /**
@@ -56,6 +58,10 @@ public class GameBoard extends GridPane {
      */
     private BlockClickedListener blockClickedListener;
 
+    /**
+     * The listener to call when a specific block is right-clicked
+     */
+    protected RightClickedListener rightClickedListener;
 
     /**
      * Create a new GameBoard, based off a given grid, with a visual width and height.
@@ -164,17 +170,35 @@ public class GameBoard extends GridPane {
     }
 
     /**
-     * Triggered when a block is clicked. Call the attached listener.
+     * Set the listener to handle an event when a block is clicked
      *
-     * @param event mouse event
-     * @param block block clicked on
+     * @param listener listener to add
      */
-    private void blockClicked(MouseEvent event, GameBlock block) {
-        logger.info("Block clicked: {}", block);
-
-        if (blockClickedListener != null) {
-            blockClickedListener.blockClicked(block);
-        }
+    public void setOnRightClick(RightClickedListener listener) {
+        this.rightClickedListener = listener;
     }
 
+    /**
+     * when the block is left-clicked
+     * the listener calls its own method if it's not empty
+     *
+     * when the block is right-clicked
+     * the listener calls its own method if it's not empty
+     *
+     * @param block block clicked on
+     */
+    protected void blockClicked(MouseEvent e,GameBlock block) {
+        logger.info("Block clicked: {}", block);
+
+        switch (e.getButton()){
+            case PRIMARY->{
+                if(blockClickedListener != null)
+                    blockClickedListener.blockClicked(block);
+            }
+            case SECONDARY ->   {
+                if (rightClickedListener != null)
+                    rightClickedListener.rightClicked(block);
+            }
+        }
+    }
 }

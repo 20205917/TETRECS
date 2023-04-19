@@ -1,6 +1,7 @@
 package uk.ac.soton.comp1206.scene;
 
 import javafx.geometry.Insets;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -24,12 +25,13 @@ public class ChallengeScene extends BaseScene {
 
     private static final Logger logger = LogManager.getLogger(MenuScene.class);
     protected Game game;
+
     //holds the current piece
     protected PieceBoard currentPiece;
     //holds the next piece
     protected PieceBoard followingPiece;
 
-
+    protected GameBoard board;
     //keep the track of Position
     protected int XPosition;
     protected int YPosition;
@@ -87,17 +89,20 @@ public class ChallengeScene extends BaseScene {
         mainPane.setRight(vBox);
 
 
-        var board = new GameBoard(game.getGrid(), gameWindow.getWidth() / 2.0, gameWindow.getWidth() / 2.0);
+        board = new GameBoard(game.getGrid(), gameWindow.getWidth() / 2.0, gameWindow.getWidth() / 2.0);
         mainPane.setCenter(board);
         board.getStyleClass().add("gameBox1");
 
 
 
-        //Handle block on gameboard grid being clicked
+        //Handle block on gameBoard grid being clicked
         board.setOnBlockClick(this::blockClicked);
 
+        //Handle rotation on block when right-clicked
+        board.setOnRightClick((gameBlock)-> rightRotate());
+
         //Handle rotation on block when pieceBoard grid is clicked
-        currentPiece.setOnBlockClick(this::rotateCurrentPiece);
+        currentPiece.setOnBlockClick((gameBlock)-> rightRotate());
     }
 
     /**
@@ -107,6 +112,43 @@ public class ChallengeScene extends BaseScene {
      */
     private void blockClicked(GameBlock gameBlock) {
         game.blockClicked(gameBlock);
+    }
+
+
+    /**
+     * reset the next currentPiece and next followingPiece on the pieceBoard
+     */
+    protected void nextPiece(GamePiece nextCurrentPiece,GamePiece nextFollowingPiece) {
+        this.currentPiece.setPiece(nextCurrentPiece);
+        this.followingPiece.setPiece(nextFollowingPiece);
+    }
+
+    /**
+     * rightRotate the block
+     */
+    public void rightRotate() {
+        game.rotateCurrentPiece(1);
+        currentPiece.setPiece(game.getCurrentPiece());
+        Multimedia.playAudio("rotate.wav");
+    }
+
+    /**
+     * leftRotate the block
+     */
+    public void leftRotate() {
+        game.rotateCurrentPiece(3);
+        currentPiece.setPiece(game.getCurrentPiece());
+        Multimedia.playAudio("rotate.wav");
+    }
+
+    /**
+     * swaps the current piece with the following one and reset
+     */
+    public void swapPiece(){
+        game.swapCurrentPiece();
+        currentPiece.setPiece(game.getCurrentPiece());
+        followingPiece.setPiece(game.getFollowingPiece());
+        Multimedia.playAudio("transition.wav");
     }
 
     /**
@@ -131,45 +173,67 @@ public class ChallengeScene extends BaseScene {
         //listens to when the next piece is fetched and calls the respective in class method
         this.game.setNextPieceListener(this::nextPiece);
 
-        //add keyboard listener
-        //esc to go back to menu
-        scene.setOnKeyPressed(event -> {
-            switch (event.getCode()) {
-                case ESCAPE:
-                    quit();
-                    gameWindow.startMenu();
-                    break;
-                default:
-                    break;
-            }
-        });
+        //listens to when a key is pressed and calls the respective in class method
+        scene.setOnKeyPressed(this::keyPressed);
 
         game.start();
     }
 
     /**
-     * reset the next currentPiece and next followingPiece on the pieceBoard
+     * handles the events that occur when a key is pressed
+     * this method enables keyboard support
+     *
+     * @param event have the type of the pressed key
      */
-    protected void nextPiece(GamePiece nextCurrentPiece,GamePiece nextFollowingPiece) {
-        this.currentPiece.setPiece(nextCurrentPiece);
-        this.followingPiece.setPiece(nextFollowingPiece);
-    }
+    public void keyPressed(KeyEvent event){
 
-    public void rotateCurrentPiece(GameBlock block) {
-        game.rotateCurrentPiece();
-        currentPiece.setPiece(game.getCurrentPiece());
-        Multimedia.playAudio("rotate.wav");
-    }
+        switch (event.getCode()) {
+            //when escape is pressed the game is stopped and the player is brought
+            //back to the menu
+            case ESCAPE->{
+                quit();
+                //game.stop();
+                gameWindow.startMenu();
+            }
+            //when space or r is pressed the pieces swapPiece
+            case SPACE,R -> swapPiece();
 
-    /**
-     * swaps the current piece with the next one and displays
-     * this change in the pieceBoards
-     */
-    public void swapCurrentPiece(){
-        game.swapCurrentPiece();
-        currentPiece.setPiece(game.getCurrentPiece());
-        followingPiece.setPiece(game.getFollowingPiece());
-        Multimedia.playAudio("transition.wav");
+            //when enter or x is pressed the block is placed
+            case ENTER,X -> blockClicked(board.getBlock(XPosition,YPosition));
+
+            //when right arrow or D is pressed the block is moved one block to the right
+            case RIGHT,D -> {
+                if(XPosition < game.getCols() - 1 ){
+                    XPosition++;
+                }
+            }
+
+            //when left arrow or A is pressed , the block is moved one block to the left
+            case LEFT,A -> {
+                if(XPosition > 0){
+                    XPosition--;
+                }
+            }
+
+            //when up arrow or W is pressed , the block is moved one block up
+            case UP,W -> {
+                if(YPosition > 0){
+                    YPosition--;
+                }
+            }
+
+            //when downwards arrow or S is pressed ,  the block is moved one block down
+            case DOWN,S -> {
+                if(YPosition < game.getRows() - 1 ){
+                    YPosition++;
+                }
+            }
+            //when the open bracket or q is pressed the block rotates to the left
+            case OPEN_BRACKET,Q,Z->leftRotate();
+
+            //when the close bracket or e is pressed the block rotates to the right
+            case CLOSE_BRACKET,E,C->rightRotate();
+        }
     }
 
     private void quit() {

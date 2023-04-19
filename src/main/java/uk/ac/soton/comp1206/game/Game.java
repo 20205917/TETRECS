@@ -172,8 +172,8 @@ public class Game {
     /**
      * rotateCurrentPiece method rotate the next piece
      */
-    public void rotateCurrentPiece() {
-        currentPiece.rotate();
+    public void rotateCurrentPiece(int times) {
+        currentPiece.rotate(times);
     }
 
     /**
