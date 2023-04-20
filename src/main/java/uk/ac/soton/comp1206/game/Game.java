@@ -60,6 +60,8 @@ public class Game {
     //future that will be used to schedule the game loop
     private ScheduledFuture<?> future;
 
+    private String playerName;
+
 
     /*
        listeners that handle the next piece, the lines cleared, the game loop
@@ -406,4 +408,15 @@ public class Game {
     }
 
 
+    public Pair<String,Integer> getScores() {
+        if (playerName == null) {
+            //default name
+            playerName="Player";
+        }
+        return new Pair<>(playerName,score.get());
+    }
+
+    public void setPlayerName(String playerName) {
+        this.playerName = playerName;
+    }
 }
