@@ -2,16 +2,20 @@ package uk.ac.soton.comp1206.game;
 
 import javafx.animation.Timeline;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.util.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
 import uk.ac.soton.comp1206.component.GameBlockCoordinate;
 import uk.ac.soton.comp1206.event.GameLoopListener;
+import uk.ac.soton.comp1206.event.GameOverListener;
 import uk.ac.soton.comp1206.event.LineClearedListener;
 import uk.ac.soton.comp1206.event.NextPieceListener;
 import uk.ac.soton.comp1206.utils.Multimedia;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -64,6 +68,8 @@ public class Game {
     private NextPieceListener nextPieceListener;
     private LineClearedListener lineClearedListener;
     private GameLoopListener gameLooplistener;
+
+    private GameOverListener gameOverListener;
 
     /**
      * Add bindable properties for the score, level,
@@ -140,6 +146,9 @@ public class Game {
         this.gameLooplistener = gameLooplistener;
     }
 
+    public void setGameOverListener(GameOverListener gameOverListener) {
+        this.gameOverListener = gameOverListener;
+    }
     /**
      * Start the game
      */

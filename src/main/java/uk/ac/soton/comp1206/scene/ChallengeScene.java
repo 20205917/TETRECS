@@ -199,6 +199,7 @@ public class ChallengeScene extends BaseScene {
 
         //listens to when the next piece is fetched and calls the respective in class method
         this.game.setNextPieceListener(this::nextPiece);
+        this.game.setGameOverListener(this::gameOver);
 
         //listens to when a key is pressed and calls the respective in class method
         scene.setOnKeyPressed(this::keyPressed);
@@ -209,17 +210,24 @@ public class ChallengeScene extends BaseScene {
         //listens to when a game loop starts and calls the respective in class method
         game.setGameLooplistener((delay) -> {
             //update the time label
-            timeline=new Timeline(
+            timeline = new Timeline(
                     //green->yellow->red
-                    new KeyFrame(Duration.ZERO, new KeyValue(progressBar.progressProperty(), 1),new KeyValue(progressBar.styleProperty(), " -fx-accent: #00ff00;" )),
-                    new KeyFrame(Duration.millis(delay/3), new KeyValue(progressBar.progressProperty(), 0.66),new KeyValue(progressBar.styleProperty(), " -fx-accent: #ffff00;")),
-                    new KeyFrame(Duration.millis(delay/3*2), new KeyValue(progressBar.progressProperty(), 0.33),new KeyValue(progressBar.styleProperty(), " -fx-accent: #ff0000")),
+                    new KeyFrame(Duration.ZERO, new KeyValue(progressBar.progressProperty(), 1), new KeyValue(progressBar.styleProperty(), " -fx-accent: #00ff00;")),
+                    new KeyFrame(Duration.millis(delay / 3), new KeyValue(progressBar.progressProperty(), 0.66), new KeyValue(progressBar.styleProperty(), " -fx-accent: #ffff00;")),
+                    new KeyFrame(Duration.millis(delay / 3 * 2), new KeyValue(progressBar.progressProperty(), 0.33), new KeyValue(progressBar.styleProperty(), " -fx-accent: #ff0000")),
                     new KeyFrame(Duration.millis(delay), new KeyValue(progressBar.progressProperty(), 0))
             );
             timeline.setCycleCount(Animation.INDEFINITE);
             timeline.play();
         });
         game.start();
+    }
+
+    private void gameOver(Game game) {
+        logger.info("Game Over");
+        timeline.stop();
+        //show the game over screen,switch to the scores screen
+        gameWindow.startScoreBoard(game);
     }
 
 
@@ -236,8 +244,6 @@ public class ChallengeScene extends BaseScene {
             //back to the menu
             case ESCAPE -> {
                 quit();
-                //game.stop();
-                gameWindow.startMenu();
             }
             //when space or r is pressed the pieces swapPiece
             case SPACE, R -> swapPiece();
@@ -282,7 +288,7 @@ public class ChallengeScene extends BaseScene {
 
     private void quit() {
         //before we quit, we need to reset the game
-        game = null;//this will allow the garbage collector to clean up the game object
+        gameOver(game);
     }
 
     /**
