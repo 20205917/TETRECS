@@ -225,6 +225,7 @@ public class ChallengeScene extends BaseScene {
 
     private void gameOver(Game game) {
         logger.info("Game Over");
+        this.game.stop();
         timeline.stop();
         //show the game over screen,switch to the scores screen
         gameWindow.startScoreBoard(game);

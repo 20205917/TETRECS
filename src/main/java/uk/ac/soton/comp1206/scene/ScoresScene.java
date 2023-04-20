@@ -1,10 +1,16 @@
 package uk.ac.soton.comp1206.scene;
 
 import javafx.beans.property.SimpleListProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Pos;
+import javafx.scene.layout.*;
+import javafx.scene.text.Text;
 import javafx.util.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import uk.ac.soton.comp1206.component.ScoreList;
 import uk.ac.soton.comp1206.game.Game;
 import uk.ac.soton.comp1206.ui.GamePane;
 import uk.ac.soton.comp1206.ui.GameWindow;
@@ -27,7 +33,11 @@ public class ScoresScene extends BaseScene {
     private ArrayList<Pair<String, Integer>> scores;
 
     //for show
-    private ObservableList<Pair<String, Integer>> scoresList;
+    private ObservableList<Pair<String, Integer>> observableList;
+
+    private ScoreList localScoreList;
+
+    private SimpleStringProperty player=new SimpleStringProperty();
 
     //the game that we need get the scores
     private Game game;
@@ -47,30 +57,12 @@ public class ScoresScene extends BaseScene {
      */
     public ScoresScene(GameWindow gameWindow) {
         super(gameWindow);
+        logger.info("Creating Scores Scene");
     }
 
     @Override
     public void initialise() {
-        localScores = new SimpleListProperty<>();
-
-        //get the scores from the local file and the game
-        scores = loadScores();
-
-        //get a pair of player and score from the game
-        var gameScores = game.getScores();
-        scores.add(gameScores);
-        //sort by score and only get the top 10 scores
-        scores.sort((o1, o2) -> o2.getValue() - o1.getValue());
-        if (scores.size() > 10)
-            scores = new ArrayList<>(scores.subList(0, 10));
-
-        //set the scores to the list
-        localScores.setAll(scores);
-
-        scoresList = localScores.get();
-        //set to UI component
-
-
+        logger.info("Initialising Scores Scene");
     }
 
     /**
@@ -138,7 +130,7 @@ public class ScoresScene extends BaseScene {
         result.add(new Pair<>("Player7", 1000));
         result.add(new Pair<>("Player8", 1000));
         result.add(new Pair<>("Player9", 1000));
-        result.add(new Pair<>("Player10",1000));
+        result.add(new Pair<>("Player10", 1000));
         writeScores(result);
     }
 
@@ -147,6 +139,63 @@ public class ScoresScene extends BaseScene {
     public void build() {
         root = new GamePane(gameWindow.getWidth(), gameWindow.getHeight());
 
+        var scorePane = new StackPane();
+        scorePane.setMaxWidth(gameWindow.getWidth());
+        scorePane.setMaxHeight(gameWindow.getHeight());
+        scorePane.getStyleClass().add("menu-background");
+        root.getChildren().add(scorePane);
+
+        var mainPane = new BorderPane();
+        scorePane.getChildren().add(mainPane);
+
+        var vbox = new VBox(5);
+        vbox.setSpacing(20);
+        vbox.setAlignment(Pos.TOP_CENTER);
+        //game over label
+        var gameOverLabel = new Text("Game Over");
+        gameOverLabel.getStyleClass().add("bigtitle");
+        vbox.getChildren().add(gameOverLabel);
+
+        //add play and score label
+        var pair = game.getScores();
+        var playLabel = new Text("Player: " + pair.getKey() + "   Score: " + pair.getValue());
+        playLabel.getStyleClass().add("level");
+        vbox.getChildren().add(playLabel);
+
+        GridPane gridPane = new GridPane();
+        gridPane.setHgap(10);
+        gridPane.setVgap(10);
+        gridPane.setAlignment(Pos.CENTER);
+        Text local_records = new Text("Local Records");
+        local_records.getStyleClass().add("heading");
+        Text remote_records = new Text("Remote Records");
+        remote_records.getStyleClass().add("heading");
+        gridPane.add(local_records, 0, 0);
+        gridPane.add(remote_records, 5, 0);
+
+
+        buildLocalScoreList();
+        gridPane.add(localScoreList, 0, 1);
+
+        vbox.getChildren().add(gridPane);
+        mainPane.setTop(vbox);
+    }
+
+    private void buildLocalScoreList() {
+        this.localScoreList = new ScoreList();
+        //load the scores from the local file,we only need the top 10 scores
+        scores = loadScores();
+        scores.add(this.game.getScores());
+        //sort the scores
+        scores.sort((o1, o2) -> o2.getValue() - o1.getValue());
+        //get the top 10 scores
+        if (scores.size() > 10) {
+            scores = new ArrayList<>(scores.subList(0, 10));
+        }
+        observableList = FXCollections.observableArrayList(scores);
+        localScores = new SimpleListProperty<>(observableList);
+
+        localScoreList.bind(localScores, this.player);
 
     }
 }

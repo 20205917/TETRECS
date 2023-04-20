@@ -1,6 +1,7 @@
 package uk.ac.soton.comp1206.game;
 
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.util.Pair;
 import org.apache.logging.log4j.LogManager;
@@ -103,7 +104,7 @@ public class Game {
         //Initialise the properties
         this.score = new SimpleIntegerProperty(0);
         this.level = new SimpleIntegerProperty(0);
-        this.lives = new SimpleIntegerProperty(3);
+        this.lives = new SimpleIntegerProperty(1);
         this.multiplier = new SimpleIntegerProperty(1);
         this.followingPiece = spawnPiece();
         this.executor = new ScheduledThreadPoolExecutor(1);
@@ -124,7 +125,8 @@ public class Game {
         this.lives.set(this.lives.get() - 1);
         //if lives touch 0, the game is over
         if (this.lives.get() == 0) {
-            this.executor.shutdown();
+            Platform.runLater(() -> this.gameOverListener.gameOver(this));
+            return;
             //game over
         }
         nextPiece();
@@ -159,6 +161,14 @@ public class Game {
         initialiseGame();
     }
 
+    /**
+     * Stop the game
+     */
+    public void stop() {
+        logger.info("Stopping game");
+        this.future.cancel(true);
+        this.executor.shutdown();
+    }
     /**
      * Initialise a new game and set up anything that needs to be done at the start
      */

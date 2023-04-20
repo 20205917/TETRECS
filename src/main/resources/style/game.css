@@ -63,7 +63,6 @@
     -fx-font-family: 'Orbitron';
     -fx-font-size: 20px;
     -fx-font-weight: 700;
-    -fx-border-color: black;
     -fx-stroke: black;
     -fx-effect: dropshadow(gaussian, black, 1, 1.0, 1, 1);
 }
@@ -115,17 +114,19 @@
 .scorelist {
     -fx-font-size: 20px;
     -fx-font-family: 'Orbitron';
+    -fx-fill: white;
 }
 
 .scoreitem {
-
+    -fx-fill: white;
 }
 
 .scorer {
-
+    -fx-fill: white;
 }
 
 .myscore {
+    -fx-fill: white;
     -fx-font-weight: 700;
 }
 
