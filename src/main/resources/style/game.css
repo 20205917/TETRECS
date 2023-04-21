@@ -30,6 +30,14 @@
     -fx-effect: dropshadow(gaussian, black, 1, 1.0, 1, 1);
 }
 
+.text-field {
+    -fx-fill: white;
+    -fx-font-family: 'Orbitron';
+    -fx-font-size: 32px;
+    -fx-font-weight: 700;
+}
+
+
 .menuItem:hover {
     -fx-fill: yellow;
 }
@@ -51,7 +59,7 @@
 .title {
     -fx-fill: white;
     -fx-font-family: 'Orbitron';
-    -fx-font-size: 32px;
+    -fx-font-size: 26px;
     -fx-font-weight: 900;
     -fx-border-color: black;
     -fx-stroke: black;

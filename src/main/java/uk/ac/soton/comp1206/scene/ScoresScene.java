@@ -76,9 +76,9 @@ public class ScoresScene extends BaseScene {
     /**
      * Load the scores from the local file and the game
      */
-    public ArrayList<Pair<String, Integer>> loadScores() {
+    public static ArrayList<Pair<String, Integer>> loadScores() {
         //load the scores from the local file,we only need the top 10 scores
-        String scoresPath = Objects.requireNonNull(this.getClass().getResource("/history/scores")).getPath();
+        String scoresPath = Objects.requireNonNull(ScoresScene.class.getResource("/history/scores")).getPath();
         logger.info("Loading scores from the local file: " + scoresPath);
         var result = new ArrayList<Pair<String, Integer>>();
         try {
@@ -107,8 +107,8 @@ public class ScoresScene extends BaseScene {
      * write an ordered list of scores into a file, using the sameformat as above.
      * lf the scores file does not exist, write a default list of scores to the file.
      */
-    public void writeScores(ArrayList<Pair<String, Integer>> pairs) {
-        String scoresPath = Objects.requireNonNull(this.getClass().getResource("/history/scores")).getPath();
+    public static void writeScores(ArrayList<Pair<String, Integer>> pairs) {
+        String scoresPath = Objects.requireNonNull(ScoresScene.class.getResource("/history/scores")).getPath();
         //write the scores to the local file,clear the old scores
         logger.info("Writing scores to the local file: " + scoresPath);
         try {
@@ -127,7 +127,7 @@ public class ScoresScene extends BaseScene {
     /**
      * writeDefaultScores to the file
      */
-    private void writeDefaultScores() {
+    private static  void writeDefaultScores() {
         var result = new ArrayList<Pair<String, Integer>>();
         result.add(new Pair<>("Player1", 1000));
         result.add(new Pair<>("Player2", 1000));

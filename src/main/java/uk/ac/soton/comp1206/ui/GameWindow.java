@@ -86,8 +86,10 @@ public class GameWindow {
     /**
      * Display the single player challenge
      */
-    public void startChallenge() {
-        loadScene(new ChallengeScene(this));
+    public void startChallenge(String playerName) {
+        ChallengeScene challengeScene = new ChallengeScene(this,playerName);
+
+        loadScene(challengeScene);
     }
 
     /**

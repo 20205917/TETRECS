@@ -3,15 +3,19 @@ package uk.ac.soton.comp1206.game;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.util.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
 import uk.ac.soton.comp1206.component.GameBlockCoordinate;
+import uk.ac.soton.comp1206.component.ScoreList;
 import uk.ac.soton.comp1206.event.GameLoopListener;
 import uk.ac.soton.comp1206.event.GameOverListener;
 import uk.ac.soton.comp1206.event.LineClearedListener;
 import uk.ac.soton.comp1206.event.NextPieceListener;
+import uk.ac.soton.comp1206.scene.ScoresScene;
 import uk.ac.soton.comp1206.utils.Multimedia;
 
 import java.util.ArrayList;
@@ -87,6 +91,10 @@ public class Game {
 
     public SimpleIntegerProperty multiplier;
 
+    public SimpleStringProperty highestPlayer;
+
+    public SimpleIntegerProperty highestScore;
+
 
     /**
      * Create a new game with the specified rows and columns. Creates a corresponding grid model.
@@ -110,7 +118,17 @@ public class Game {
         this.executor = new ScheduledThreadPoolExecutor(1);
         this.future = this.executor.schedule(this::gameLoop, getTimerDelay(), TimeUnit.MILLISECONDS);
 
+        this.highestPlayer = new SimpleStringProperty();
+        this.highestScore = new SimpleIntegerProperty();
+
+        //get local high score
+        ArrayList<Pair<String, Integer>> pairs = ScoresScene.loadScores();
+        if (pairs.size() > 0) {
+            this.highestPlayer.set(pairs.get(0).getKey());
+            this.highestScore.set(pairs.get(0).getValue());
+        }
     }
+
 
     /**
      * lmplement a Timer or ScheduledExecutorService inside the Game class which calls agameLoop method
@@ -132,9 +150,9 @@ public class Game {
         nextPiece();
         //the multiplier is set back to 1
         this.multiplier.set(1);
-        long delay=getTimerDelay();
+        long delay = getTimerDelay();
         //the timer restarts
-        this.future = this.executor.schedule(this::gameLoop,delay , TimeUnit.MILLISECONDS);
+        this.future = this.executor.schedule(this::gameLoop, delay, TimeUnit.MILLISECONDS);
         this.gameLooplistener.loop(delay);
     }
 
@@ -153,6 +171,7 @@ public class Game {
     public void setGameOverListener(GameOverListener gameOverListener) {
         this.gameOverListener = gameOverListener;
     }
+
     /**
      * Start the game
      */
@@ -169,6 +188,7 @@ public class Game {
         this.future.cancel(true);
         this.executor.shutdown();
     }
+
     /**
      * Initialise a new game and set up anything that needs to be done at the start
      */
@@ -332,7 +352,7 @@ public class Game {
 
         //reset the scheduler
         this.future.cancel(false);
-        this.future = this.executor.schedule(this::gameLoop,getTimerDelay() , TimeUnit.MILLISECONDS);
+        this.future = this.executor.schedule(this::gameLoop, getTimerDelay(), TimeUnit.MILLISECONDS);
         this.gameLooplistener.loop(getTimerDelay());
     }
 
@@ -355,6 +375,15 @@ public class Game {
         }
         var score = lines * blocks * 10 * multiplier.get();
         this.score.set(this.score.get() + score);
+        //compare with the high score
+        if (this.playerName == null) {
+            this.playerName = "Player";
+        }
+        if (this.score.get() > highestScore.get()) {
+            highestScore.set(this.score.get());
+            highestPlayer.set(this.playerName);
+        }
+
     }
 
     /**
@@ -418,12 +447,12 @@ public class Game {
     }
 
 
-    public Pair<String,Integer> getScores() {
+    public Pair<String, Integer> getScores() {
         if (playerName == null) {
             //default name
-            playerName="Player";
+            playerName = "Player";
         }
-        return new Pair<>(playerName,score.get());
+        return new Pair<>(playerName, score.get());
     }
 
     public void setPlayerName(String playerName) {

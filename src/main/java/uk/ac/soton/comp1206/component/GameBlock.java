@@ -128,7 +128,7 @@ public class GameBlock extends Canvas {
             //If the block is not empty, paint with the colour represented by the value
             paintColor(COLOURS[value.get()]);
         }
-        if (hover){
+        if (hover&&value.get()==0){
             paintHover();
         }
     }

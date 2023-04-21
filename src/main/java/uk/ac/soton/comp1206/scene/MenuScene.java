@@ -4,6 +4,7 @@ import javafx.animation.RotateTransition;
 import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
@@ -21,6 +22,8 @@ import uk.ac.soton.comp1206.ui.GameWindow;
 public class MenuScene extends BaseScene {
 
     private static final Logger logger = LogManager.getLogger(MenuScene.class);
+
+    private String playerName;
 
     /**
      * Create a new menu scene
@@ -90,6 +93,24 @@ public class MenuScene extends BaseScene {
         var rBox = new VBox();
         rBox.setSpacing(50);
         rBox.setAlignment(javafx.geometry.Pos.CENTER);
+        //add a user name input box
+        HBox h = new HBox(2);
+        h.setAlignment(javafx.geometry.Pos.CENTER);
+        var name = new Text("Name: ");
+        name.getStyleClass().add("menuItem");
+        h.getChildren().add(name);
+        var nameInput = new TextField();
+        nameInput.setPromptText("Enter your name");
+        nameInput.getStyleClass().add("text-field");
+        nameInput.textProperty().set("Player");
+        playerName = "Player";//default name
+        nameInput.setMaxWidth(300);
+
+        nameInput.setOnKeyTyped(event -> {
+            playerName = nameInput.getText();
+        });
+        h.getChildren().add(nameInput);
+        rBox.getChildren().add(h);
 
         var introButton = new Button("How to Play?");
         introButton.getStyleClass().add("menuItem");
@@ -143,7 +164,7 @@ public class MenuScene extends BaseScene {
      * @param event event
      */
     private void startGame(ActionEvent event) {
-        gameWindow.startChallenge();
+        gameWindow.startChallenge(playerName);
     }
 
     public void startIntro() {

@@ -1,6 +1,7 @@
 package uk.ac.soton.comp1206.scene;
 
 import javafx.animation.*;
+import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -11,6 +12,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+import javafx.util.Pair;
 import javafx.util.StringConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -48,6 +50,8 @@ public class ChallengeScene extends BaseScene {
     protected ProgressBar progressBar;
 
     private Timeline timeline;
+    private String playerName;
+
 
     /**
      * Create a new Single Player challenge scene
@@ -57,6 +61,11 @@ public class ChallengeScene extends BaseScene {
     public ChallengeScene(GameWindow gameWindow) {
         super(gameWindow);
         logger.info("Creating Challenge Scene");
+    }
+
+    public ChallengeScene(GameWindow gameWindow, String playerName) {
+        super(gameWindow);
+        this.playerName = playerName;
     }
 
     /**
@@ -75,6 +84,7 @@ public class ChallengeScene extends BaseScene {
         challengePane.setMaxHeight(gameWindow.getHeight());
         challengePane.getStyleClass().add("menu-background");
         root.getChildren().add(challengePane);
+        root.setMaxWidth(gameWindow.getWidth()*2);
 
 
         var mainPane = new BorderPane();
@@ -92,12 +102,12 @@ public class ChallengeScene extends BaseScene {
         vBox.setSpacing(30);
 
         //displays the current piece in a pieceBoard object
-        currentPiece = new PieceBoard(gameWindow.getWidth() / 6.0, gameWindow.getHeight() / 6.0);
+        currentPiece = new PieceBoard(gameWindow.getHeight() / 6.0, gameWindow.getHeight() / 6.0);
         currentPiece.getStyleClass().add("gameBox");
         vBox.getChildren().add(currentPiece);
 
         //displays the next piece in a pieceBoard object
-        followingPiece = new PieceBoard(gameWindow.getWidth() / 11.0, gameWindow.getHeight() / 11.0);
+        followingPiece = new PieceBoard(gameWindow.getHeight() / 11.0, gameWindow.getHeight() / 11.0);
         followingPiece.getStyleClass().add("gameBox");
         vBox.getChildren().add(followingPiece);
 
@@ -187,6 +197,7 @@ public class ChallengeScene extends BaseScene {
 
         //Start new game
         game = new Game(5, 5);
+        game.setPlayerName(playerName);
 
     }
 
@@ -300,6 +311,19 @@ public class ChallengeScene extends BaseScene {
     public VBox addStatePanel() {
 
         var vbox = new VBox();
+        var playerText = new Text("Player Name: "+this.playerName);
+        playerText.getStyleClass().add("title");
+        vbox.getChildren().add(playerText);
+
+        var highestPlayer = new Text();
+        highestPlayer.textProperty().bind(Bindings.format("Highest Player: %s", game.highestPlayer));
+        highestPlayer.getStyleClass().add("title");
+        vbox.getChildren().add(highestPlayer);
+
+        var highestScore = new Text();
+        highestScore.textProperty().bind(Bindings.format("Highest Score: %d", game.highestScore));
+        highestScore.getStyleClass().add("title");
+        vbox.getChildren().add(highestScore);
 
 
         var scoreText = new Text();
@@ -326,4 +350,8 @@ public class ChallengeScene extends BaseScene {
         return vbox;
     }
 
+
+    public void setPlayerName(String playerName) {
+        this.playerName = playerName;
+    }
 }
