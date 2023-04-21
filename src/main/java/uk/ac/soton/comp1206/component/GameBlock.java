@@ -52,6 +52,8 @@ public class GameBlock extends Canvas {
     private final double width;
     private final double height;
 
+    private boolean hover;
+
     /**
      * The column this block exists as in the grid
      */
@@ -86,6 +88,18 @@ public class GameBlock extends Canvas {
         setWidth(width);
         setHeight(height);
 
+        //when the mouse moves over this block, hover it
+        setOnMouseMoved((e)->{
+            this.hover=true;
+            paint();
+        });
+
+        //when the mouse moves away from this block, unhover it
+        setOnMouseExited((e)->{
+            this.hover=false;
+            paint();
+        });
+
         //Do an initial paint
         paint();
 
@@ -114,7 +128,17 @@ public class GameBlock extends Canvas {
             //If the block is not empty, paint with the colour represented by the value
             paintColor(COLOURS[value.get()]);
         }
+        if (hover){
+            paintHover();
+        }
     }
+
+    private void paintHover() {
+        GraphicsContext gc = getGraphicsContext2D();
+        gc.setFill(Color.GRAY);
+        gc.fillRect(0, 0, width, height);
+    }
+
 
     /**
      * Paint this canvas empty
