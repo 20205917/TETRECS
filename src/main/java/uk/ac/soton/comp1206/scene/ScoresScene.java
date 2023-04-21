@@ -130,16 +130,16 @@ public class ScoresScene extends BaseScene {
      */
     private static  void writeDefaultScores() {
         var result = new ArrayList<Pair<String, Integer>>();
-        result.add(new Pair<>("Player1", 1000));
-        result.add(new Pair<>("Player2", 1000));
-        result.add(new Pair<>("Player3", 1000));
-        result.add(new Pair<>("Player4", 1000));
-        result.add(new Pair<>("Player5", 1000));
-        result.add(new Pair<>("Player6", 1000));
-        result.add(new Pair<>("Player7", 1000));
-        result.add(new Pair<>("Player8", 1000));
-        result.add(new Pair<>("Player9", 1000));
-        result.add(new Pair<>("Player10", 1000));
+        result.add(new Pair<>("Player1", 100));
+        result.add(new Pair<>("Player2", 100));
+        result.add(new Pair<>("Player3", 100));
+        result.add(new Pair<>("Player4", 100));
+        result.add(new Pair<>("Player5", 100));
+        result.add(new Pair<>("Player6", 100));
+        result.add(new Pair<>("Player7", 100));
+        result.add(new Pair<>("Player8", 100));
+        result.add(new Pair<>("Player9", 100));
+        result.add(new Pair<>("Player10", 100));
         writeScores(result);
     }
 

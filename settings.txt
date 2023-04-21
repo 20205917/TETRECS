@@ -1,1 +1,1 @@
-50.0 50.0 3 2 challenge-background5
+7.692307692307687 19.0 3 2 challenge-background5
