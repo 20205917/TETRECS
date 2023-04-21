@@ -10,8 +10,6 @@ import javafx.scene.paint.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.HashSet;
-
 /**
  * The Visual User Interface component representing a single block in the grid.
  *

@@ -1,7 +1,6 @@
 package uk.ac.soton.comp1206.component;
 
 import uk.ac.soton.comp1206.game.GamePiece;
-import uk.ac.soton.comp1206.game.Grid;
 
 /**
  * This can be used to display an upcoming piece in a 3x3 grid, which we will update
