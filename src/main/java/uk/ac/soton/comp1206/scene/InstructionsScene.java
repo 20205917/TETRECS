@@ -23,11 +23,6 @@ import uk.ac.soton.comp1206.utils.Multimedia;
 public class InstructionsScene extends BaseScene{
 
     private static final Logger logger = LogManager.getLogger(InstructionsScene.class);
-    /**
-     * Create a new instructions screen
-     *
-     * @param gameWindow the game window
-     */
     public InstructionsScene(GameWindow gameWindow) {
         super(gameWindow);
         logger.info("Creating Instructions Scene");

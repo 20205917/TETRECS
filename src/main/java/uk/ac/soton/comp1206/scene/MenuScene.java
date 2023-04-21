@@ -104,19 +104,19 @@ public class MenuScene extends BaseScene {
         playerName = "Player";//default name
         nameInput.setMaxWidth(300);
 
-        nameInput.setOnKeyTyped(event -> {
-            playerName = nameInput.getText();
-        });
+        nameInput.setOnKeyTyped(event -> playerName = nameInput.getText());
         h.getChildren().add(nameInput);
         rBox.getChildren().add(h);
 
         var introButton = new Button("How to Play?");
         introButton.getStyleClass().add("menuItem");
-        introButton.setOnAction(event -> {
-            startIntro();
-        });
+        introButton.setOnAction(event -> gameWindow.startInstructions() );
         rBox.getChildren().add(introButton);
 
+        var settingsButton = new Button("Settings");
+        settingsButton.getStyleClass().add("menuItem");
+        settingsButton.setOnAction(event -> gameWindow.startSettings() );
+        rBox.getChildren().add(settingsButton);
 
         //For now, let us just add a button that starts the game. I'm sure you'll do something way better.
         var button = new Button("Play");
@@ -127,9 +127,7 @@ public class MenuScene extends BaseScene {
 
         var exitButton = new Button("Exit");
         exitButton.getStyleClass().add("menuItem");
-        exitButton.setOnAction(event -> {
-            close();
-        });
+        exitButton.setOnAction(event -> close());
         rBox.getChildren().add(exitButton);
 
         mainPane.setCenter(rBox);
@@ -165,9 +163,6 @@ public class MenuScene extends BaseScene {
         gameWindow.startChallenge(playerName);
     }
 
-    public void startIntro() {
-        gameWindow.startInstructions();
-    }
 
     public void close() {
         System.exit(0);

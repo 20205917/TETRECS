@@ -13,6 +13,7 @@ import uk.ac.soton.comp1206.event.GameOverListener;
 import uk.ac.soton.comp1206.event.LineClearedListener;
 import uk.ac.soton.comp1206.event.NextPieceListener;
 import uk.ac.soton.comp1206.scene.ScoresScene;
+import uk.ac.soton.comp1206.scene.SettingsScene;
 import uk.ac.soton.comp1206.utils.Multimedia;
 
 import java.util.ArrayList;
@@ -111,8 +112,8 @@ public class Game {
 
         //Initialise the properties
         this.score = new SimpleIntegerProperty(0);
-        this.level = new SimpleIntegerProperty(0);
-        this.lives = new SimpleIntegerProperty(1);
+        this.level = new SimpleIntegerProperty(SettingsScene.speedLevel);
+        this.lives = new SimpleIntegerProperty(SettingsScene.healthPoint);
         this.multiplier = new SimpleIntegerProperty(1);
         this.followingPiece = spawnPiece();
         this.executor = new ScheduledThreadPoolExecutor(1);
@@ -127,6 +128,7 @@ public class Game {
             this.highestPlayer.set(pairs.get(0).getKey());
             this.highestScore.set(pairs.get(0).getValue());
         }
+
     }
 
 

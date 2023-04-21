@@ -74,6 +74,7 @@ public class GameWindow {
         Font.loadFont(getClass().getResourceAsStream("/style/Orbitron-Regular.ttf"), 32);
         Font.loadFont(getClass().getResourceAsStream("/style/Orbitron-Bold.ttf"), 32);
         Font.loadFont(getClass().getResourceAsStream("/style/Orbitron-ExtraBold.ttf"), 32);
+        SettingsScene.loadSettings();
     }
 
     /**
@@ -105,6 +106,11 @@ public class GameWindow {
      * Display Instructions
      */
     public void startInstructions() { loadScene(new InstructionsScene(this)); }
+
+    /**
+     * Display Instructions
+     */
+    public void startSettings() { loadScene(new SettingsScene(this)); }
 
     /**
      * Set up the default settings for the stage itself (the window), such as the title and minimum width and height.

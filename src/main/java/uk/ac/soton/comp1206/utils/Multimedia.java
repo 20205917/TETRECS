@@ -24,9 +24,9 @@ public class Multimedia {
     private static MediaPlayer audioPlayer;
     private static MediaPlayer musicPlayer;
 
-    private static int audioVolume = 1;
+    private static double audioVolume = 1;
 
-    private static int musicVolume = 1;
+    private static double musicVolume = 1;
 
     private static boolean playing = false;
 
@@ -76,5 +76,19 @@ public class Multimedia {
         String imageFilePath = Objects.requireNonNull(Multimedia.class.getResource("/images/" + fileName)).toExternalForm();
         logger.info("Loading image file: " + imageFilePath);
         return new ImageView(imageFilePath);
+    }
+
+    //Set the music volume
+    public static void setMusicVolume(double volume) {
+        musicVolume = volume;
+        if(musicPlayer!= null)
+            musicPlayer.setVolume(musicVolume);
+    }
+
+    //Set audio volume
+    public static void setAudioVolume(double volume) {
+        audioVolume = volume;
+        if(audioPlayer!= null)
+            audioPlayer.setVolume(audioVolume);
     }
 }

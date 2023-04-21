@@ -50,7 +50,13 @@ public class GameBlock extends Canvas {
     private final double width;
     private final double height;
 
+    public void setMyHover(boolean hover) {
+        this.hover = hover;
+        paint();
+    }
+
     private boolean hover;
+
 
     /**
      * The column this block exists as in the grid
@@ -172,9 +178,9 @@ public class GameBlock extends Canvas {
 
         //Shapes
         gc.setStroke(Color.WHITE);
-        gc.strokeRoundRect(2.5,2.5,width-5,height-5,10,10);
-        gc.strokeLine(2.5,2.5,width-3,height-3);
-        gc.strokeLine(2.5,height - 3, width -3 ,2.5);
+        gc.strokeRoundRect(2,2,width-4,height-4,8,8);
+        gc.strokeLine(2,2,width-3,height-3);
+        gc.strokeLine(2,height - 3, width -3 ,2);
 
         //Border
         gc.setStroke(Color.BLACK);

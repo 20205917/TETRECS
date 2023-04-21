@@ -1,6 +1,9 @@
 package uk.ac.soton.comp1206.scene;
 
-import javafx.animation.*;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -40,9 +43,6 @@ public class ChallengeScene extends BaseScene {
     protected PieceBoard followingPiece;
     //holds the Game Board
     protected GameBoard board;
-    //keep the track of Position
-    protected int XPosition;
-    protected int YPosition;
 
     protected ProgressBar progressBar;
 
@@ -79,10 +79,9 @@ public class ChallengeScene extends BaseScene {
         var challengePane = new StackPane();
         challengePane.setMaxWidth(gameWindow.getWidth());
         challengePane.setMaxHeight(gameWindow.getHeight());
-        challengePane.getStyleClass().add("menu-background");
+        challengePane.getStyleClass().add(SettingsScene.theme.getText());
         root.getChildren().add(challengePane);
         root.setMaxWidth(gameWindow.getWidth()*2);
-
 
         var mainPane = new BorderPane();
         challengePane.getChildren().add(mainPane);
@@ -221,8 +220,8 @@ public class ChallengeScene extends BaseScene {
             timeline = new Timeline(
                     //green->yellow->red
                     new KeyFrame(Duration.ZERO, new KeyValue(progressBar.progressProperty(), 1), new KeyValue(progressBar.styleProperty(), " -fx-accent: #00ff00;")),
-                    new KeyFrame(Duration.millis(delay / 3), new KeyValue(progressBar.progressProperty(), 0.66), new KeyValue(progressBar.styleProperty(), " -fx-accent: #ffff00;")),
-                    new KeyFrame(Duration.millis(delay / 3 * 2), new KeyValue(progressBar.progressProperty(), 0.33), new KeyValue(progressBar.styleProperty(), " -fx-accent: #ff0000")),
+                    new KeyFrame(Duration.millis(delay / 3.0), new KeyValue(progressBar.progressProperty(), 0.66), new KeyValue(progressBar.styleProperty(), " -fx-accent: #ffff00;")),
+                    new KeyFrame(Duration.millis(delay / 3.0 * 2), new KeyValue(progressBar.progressProperty(), 0.33), new KeyValue(progressBar.styleProperty(), " -fx-accent: #ff0000")),
                     new KeyFrame(Duration.millis(delay), new KeyValue(progressBar.progressProperty(), 0))
             );
             timeline.setCycleCount(Animation.INDEFINITE);
@@ -247,46 +246,19 @@ public class ChallengeScene extends BaseScene {
      * @param event have the type of the pressed key
      */
     public void keyPressed(KeyEvent event) {
-
         switch (event.getCode()) {
             //when escape is pressed the game is stopped and the player is brought
             //back to the menu
-            case ESCAPE -> {
-                quit();
-            }
+            case ESCAPE -> quit();
             //when space or r is pressed the pieces swapPiece
             case SPACE, R -> swapPiece();
 
             //when enter or x is pressed the block is placed
-            case ENTER, X -> blockClicked(board.getBlock(XPosition, YPosition));
+            case ENTER, X -> blockClicked(board.getHoverBlock());
 
-            //when right arrow or D is pressed the block is moved one block to the right
-            case RIGHT, D -> {
-                if (XPosition < game.getCols() - 1) {
-                    XPosition++;
-                }
-            }
+            //when arrow pressed change the indicator
+            case RIGHT, D ,LEFT, A ,UP, W ,DOWN, S -> board.doHover(event.getCode());
 
-            //when left arrow or A is pressed , the block is moved one block to the left
-            case LEFT, A -> {
-                if (XPosition > 0) {
-                    XPosition--;
-                }
-            }
-
-            //when up arrow or W is pressed , the block is moved one block up
-            case UP, W -> {
-                if (YPosition > 0) {
-                    YPosition--;
-                }
-            }
-
-            //when downwards arrow or S is pressed ,  the block is moved one block down
-            case DOWN, S -> {
-                if (YPosition < game.getRows() - 1) {
-                    YPosition++;
-                }
-            }
             //when the open bracket or q is pressed the block rotates to the left
             case OPEN_BRACKET, Q, Z -> leftRotate();
 

@@ -1,5 +1,6 @@
 package uk.ac.soton.comp1206.component;
 
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import org.apache.logging.log4j.LogManager;
@@ -53,6 +54,10 @@ public class GameBoard extends GridPane {
      * The blocks inside the grid
      */
     GameBlock[][] blocks;
+
+    //keep the track of Position
+    protected int XPosition;
+    protected int YPosition;
 
     /**
      * The listener to call when a specific block is clicked
@@ -114,6 +119,48 @@ public class GameBoard extends GridPane {
     }
 
     /**
+     * return the selected block from the GameBoard
+     */
+    public GameBlock getHoverBlock() {
+        return blocks[XPosition][YPosition];
+    }
+
+    public void doHover(KeyCode code){
+        //Eliminate the previous hover
+        getHoverBlock().setMyHover(false);
+        switch (code) {
+            //when right arrow or D is pressed the block is moved one block to the right
+            case RIGHT, D -> {
+                if (XPosition < cols - 1) {
+                    XPosition++;
+                }
+            }
+
+            //when left arrow or A is pressed , the block is moved one block to the left
+            case LEFT, A -> {
+                if (XPosition > 0) {
+                    XPosition--;
+                }
+            }
+
+            //when up arrow or W is pressed , the block is moved one block up
+            case UP, W -> {
+                if (YPosition > 0) {
+                    YPosition--;
+                }
+            }
+
+            //when downwards arrow or S is pressed ,  the block is moved one block down
+            case DOWN, S -> {
+                if (YPosition < rows - 1) {
+                    YPosition++;
+                }
+            }
+        }
+        //Generate the next hover
+        getHoverBlock().setMyHover(true);
+    }
+    /**
      * Build the GameBoard by creating a block at every x and y column and row
      */
     protected void build() {
@@ -131,6 +178,7 @@ public class GameBoard extends GridPane {
                 createBlock(x, y);
             }
         }
+
     }
 
     /**
@@ -212,4 +260,7 @@ public class GameBoard extends GridPane {
             }
         }
     }
+
+
+
 }
