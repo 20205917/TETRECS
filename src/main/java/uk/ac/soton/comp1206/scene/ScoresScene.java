@@ -49,6 +49,7 @@ public class ScoresScene extends BaseScene {
      */
     public void setGame(Game game) {
         this.game = game;
+        player.set(game.getPlayerName());
     }
 
 
@@ -191,21 +192,23 @@ public class ScoresScene extends BaseScene {
 
     private void buildLocalScoreList() {
         this.localScoreList = new ScoreList();
+
         //load the scores from the local file,we only need the top 10 scores
         scores = loadScores();
-        scores.add(this.game.getScores());
-        //sort the scores
-        scores.sort((o1, o2) -> o2.getValue() - o1.getValue());
-        //get the top 10 scores
-        if (scores.size() > 10) {
-            scores = new ArrayList<>(scores.subList(0, 10));
-        }
-        //write back
-        writeScores(scores);
         observableList = FXCollections.observableArrayList(scores);
         localScores = new SimpleListProperty<>(observableList);
 
         localScoreList.bind(localScores, this.player);
+        scores.add(new Pair<>(player.get(), game.score.get()));
+        scores.sort((o1, o2) -> o2.getValue() - o1.getValue());
+        if (scores.size() > 10) {
+            scores.remove(10);
+        }
+        //write back
+        writeScores(scores);
+
+        localScores.clear();
+        localScores.addAll(scores);
 
     }
 }

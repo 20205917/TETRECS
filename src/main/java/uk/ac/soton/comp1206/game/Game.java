@@ -65,6 +65,10 @@ public class Game {
     //future that will be used to schedule the game loop
     private ScheduledFuture<?> future;
 
+    public String getPlayerName() {
+        return playerName;
+    }
+
     private String playerName;
 
 
