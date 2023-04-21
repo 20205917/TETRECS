@@ -19,6 +19,8 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import static javafx.scene.input.KeyCode.ESCAPE;
+
 /**
  * The Scores Scene is used for displaying the scores of the players
  */
@@ -63,6 +65,12 @@ public class ScoresScene extends BaseScene {
     @Override
     public void initialise() {
         logger.info("Initialising Scores Scene");
+        //add keyborad listener,press esc to go back to the main menu
+        scene.setOnKeyPressed(event -> {
+            if (event.getCode() == ESCAPE) {
+                gameWindow.startMenu();
+            }
+        });
     }
 
     /**
@@ -192,6 +200,8 @@ public class ScoresScene extends BaseScene {
         if (scores.size() > 10) {
             scores = new ArrayList<>(scores.subList(0, 10));
         }
+        //write back
+        writeScores(scores);
         observableList = FXCollections.observableArrayList(scores);
         localScores = new SimpleListProperty<>(observableList);
 
