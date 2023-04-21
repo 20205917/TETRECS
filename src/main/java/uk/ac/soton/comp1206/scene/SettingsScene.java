@@ -19,10 +19,10 @@ import uk.ac.soton.comp1206.utils.Multimedia;
 
 import java.io.*;
 
-/**
- * Configuration of music, audio effects and background theme
- */
 
+/**
+ * The Settings Scene is used for displaying the settings of the game
+ */
 public class SettingsScene extends BaseScene {
     private static final Logger logger = LogManager.getLogger(SettingsScene.class);
 
@@ -30,14 +30,11 @@ public class SettingsScene extends BaseScene {
     public static double musicVolume = 50, audioVolume = 50;
 
     public static int speedLevel = 1, healthPoint = 1;
-    /**
-     * The background image
-     */
+
     public static Text theme = new Text("challenge-background1");
 
     /**
-     * Create a new settings scene
-     * @param gameWindow the Game Window this will be displayed in
+     * Create a new scene, passing in the GameWindow the scene will be displayed in
      */
     public SettingsScene(GameWindow gameWindow) {
         super(gameWindow);
@@ -46,30 +43,29 @@ public class SettingsScene extends BaseScene {
 
 
     /**
-     * Try to load settings.txt
+     * load settings from settings.txt
      */
     public static void loadSettings() {
         if (new File("settings.txt").exists()) {
             try {
                 FileInputStream reader = new FileInputStream("settings.txt");
-                BufferedReader br = new BufferedReader(new InputStreamReader(reader));
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(reader));
                 try {
-                    String line = br.readLine();
-                    String[] parts = line.split(" ");
-                    musicVolume = Double.parseDouble(parts[0]);
-                    audioVolume = Double.parseDouble(parts[1]);
-                    speedLevel = Integer.parseInt(parts[2]);
-                    healthPoint = Integer.parseInt(parts[3]);
-                    Multimedia.setAudioVolume(audioVolume);
+                    //read 4 lines from settings.txt
+                    musicVolume = Double.parseDouble(bufferedReader.readLine());
                     Multimedia.setMusicVolume(musicVolume);
-                    theme.setText(parts[2]);
-                    br.close();
+                    audioVolume = Double.parseDouble(bufferedReader.readLine());
+                    Multimedia.setAudioVolume(audioVolume);
+                    speedLevel = Integer.parseInt(bufferedReader.readLine());
+                    healthPoint = Integer.parseInt(bufferedReader.readLine());
+                    theme.setText(bufferedReader.readLine());
+                    bufferedReader.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
-                logger.info("File not found");
+                logger.info("settings.txt not found");
             }
         } else {
             writeSettings();
@@ -77,18 +73,17 @@ public class SettingsScene extends BaseScene {
     }
 
     /**
-     * Save config to settings.txt
+     * Write settings to settings.txt
      */
     public static void writeSettings() {
         try {
-            BufferedWriter settingsWriter = new BufferedWriter(new FileWriter("settings.txt"));
-            settingsWriter.write(musicVolume + " ");
-            settingsWriter.write(audioVolume + " ");
-            settingsWriter.write(speedLevel + " ");
-            settingsWriter.write(healthPoint + " ");
-            settingsWriter.write(theme.getText());
-            settingsWriter.close();
-            logger.info("Settings saved");
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("settings.txt"));
+            bufferedWriter.write(musicVolume + "\n");
+            bufferedWriter.write(audioVolume + "\n");
+            bufferedWriter.write(speedLevel + "\n");
+            bufferedWriter.write(healthPoint + "\n");
+            bufferedWriter.write(theme.getText() + "\n");
+            bufferedWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -96,7 +91,7 @@ public class SettingsScene extends BaseScene {
 
 
     /**
-     * Initialise settings and return to menu
+     * Initialise the Settings Scene
      */
     @Override
     public void initialise() {
@@ -104,7 +99,6 @@ public class SettingsScene extends BaseScene {
         scene.setOnKeyPressed(event -> {
             switch (event.getCode()) {
                 case ESCAPE -> gameWindow.startMenu();
-                default -> {}
             }
         });
     }
@@ -149,14 +143,14 @@ public class SettingsScene extends BaseScene {
         volumeControl.getStyleClass().add("heading");
 
         // Music
-        var musicBox = new SliderBox("Music",10,musicVolume);
+        var musicBox = new SliderBox("Music", 10, musicVolume);
         musicBox.getSlider().valueProperty().addListener((observable, oldValue, newValue) -> {
             musicVolume = musicBox.getSlider().getValue();
             Multimedia.setMusicVolume(musicVolume / 100);
         });
 
         // Audio
-        var audioBox = new SliderBox("Audio",10,audioVolume);
+        var audioBox = new SliderBox("Audio", 10, audioVolume);
         audioBox.getSlider().valueProperty().addListener((observable, oldValue, newValue) -> {
             audioVolume = (int) audioBox.getSlider().getValue();
             Multimedia.setAudioVolume(audioVolume / 100);
@@ -175,16 +169,16 @@ public class SettingsScene extends BaseScene {
         themeGrid.add(selectLabel, 0, 0, 3, 1);
 
         ImageView[] allTheme = new ImageView[6];
-        for (int i=0; i <= 5;i++){
-            allTheme[i] = Multimedia.getImageView((i+1)+".jpg");
-            themeGrid.add(allTheme[i], i%3, i/3+1);
+        for (int i = 0; i <= 5; i++) {
+            allTheme[i] = Multimedia.getImageView((i + 1) + ".jpg");
+            themeGrid.add(allTheme[i], i % 3, i / 3 + 1);
             allTheme[i].setFitWidth(240);
             allTheme[i].setPreserveRatio(true);
-            final int num = i+1;
+            final int num = i + 1;
             allTheme[i].setOnMouseClicked(e -> {
                 Multimedia.playAudio("pling.wav");
-                theme = new Text("challenge-background"+num);
-                logger.info("Set theme "+num);
+                theme = new Text("challenge-background" + num);
+                logger.info("Set theme " + num);
             });
         }
         centerBox.getChildren().addAll(volumeControl, volumeBox, themeGrid);
@@ -210,10 +204,10 @@ public class SettingsScene extends BaseScene {
                 );
         ComboBox<String> speedLevelBox = new ComboBox<>();
         speedLevelBox.setItems(levelOptions);
-        speedLevelBox.setValue("Level X"+speedLevel);
+        speedLevelBox.setValue("Level X" + speedLevel);
         speedLevelBox.setPrefSize(200, 30);
-        speedLevelBox.valueProperty().addListener((observable, oldValue, newValue)->
-                speedLevel = Integer.parseInt(speedLevelBox.getValue().substring(speedLevelBox.getValue().length()-1))
+        speedLevelBox.valueProperty().addListener((observable, oldValue, newValue) ->
+                speedLevel = Integer.parseInt(speedLevelBox.getValue().substring(speedLevelBox.getValue().length() - 1))
         );
         /*Health Point*/
         var healthy1 = new Text("Health Point");
@@ -226,10 +220,10 @@ public class SettingsScene extends BaseScene {
                 );
         ComboBox<String> HealthPointBox = new ComboBox<>();
         HealthPointBox.setItems(healthOptions);
-        HealthPointBox.setValue("Health Point : "+ healthPoint);
+        HealthPointBox.setValue("Health Point : " + healthPoint);
         HealthPointBox.setPrefSize(200, 30);
-        HealthPointBox.valueProperty().addListener((observable, oldValue, newValue)->
-                healthPoint = Integer.parseInt(HealthPointBox.getValue().substring(HealthPointBox.getValue().length()-1))
+        HealthPointBox.valueProperty().addListener((observable, oldValue, newValue) ->
+                healthPoint = Integer.parseInt(HealthPointBox.getValue().substring(HealthPointBox.getValue().length() - 1))
         );
 
         // Save button
@@ -239,7 +233,7 @@ public class SettingsScene extends BaseScene {
             writeSettings();
             gameWindow.startMenu();
         });
-        bottomBar.getChildren().addAll(speed1,speedLevelBox,healthy1,HealthPointBox,saveButton);
+        bottomBar.getChildren().addAll(speed1, speedLevelBox, healthy1, HealthPointBox, saveButton);
 
 
     }
