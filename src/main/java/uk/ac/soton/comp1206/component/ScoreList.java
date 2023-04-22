@@ -52,10 +52,12 @@ public class ScoreList extends VBox {
     }
 
 
-    public void bind(ObservableValue<ObservableList<Pair<String, Integer>>> scores, ObservableStringValue player) {
+    public void bindScores(ObservableValue<ObservableList<Pair<String, Integer>>> scores ) {
         this.scores.bind(scores);
-        this.player.bind(player);
     }
 
 
+    public void bindPlayer(ObservableStringValue player) {
+        this.player.bind(player);
+    }
 }

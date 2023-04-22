@@ -198,7 +198,10 @@ public class ScoresScene extends BaseScene {
         observableList = FXCollections.observableArrayList(scores);
         localScores = new SimpleListProperty<>(observableList);
 
-        localScoreList.bind(localScores, this.player);
+        localScoreList.bindScores(localScores);
+        //bind player
+        localScoreList.bindPlayer(player);
+
         scores.add(new Pair<>(player.get(), game.score.get()));
         scores.sort((o1, o2) -> o2.getValue() - o1.getValue());
         if (scores.size() > 10) {
